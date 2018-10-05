@@ -40,7 +40,9 @@ cd ../
 sam local start-api
 ```
 
-If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/hello`
+If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/hello`.
+
+To see more, test with `curl -vvv -X GET http://127.0.0.1:3000/hello -d '{"cityName":"Saint Paul"}'`. Note that CloudFront returns 403 when it receives a GET with a body, so use query parameters instead there: `url -vvv -X GET http://127.0.0.1:3000/hello?cityName=Saint%20Paul`.
 
 **SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to understand how to bootstrap this environment (runtime, where the source code is, etc.) - The following excerpt is what the CLI will read in order to initialize an API and its routes:
 
@@ -79,7 +81,7 @@ Next, run the following command to package our Lambda function to S3:
 sam package \
     --template-file template.yaml \
     --output-template-file packaged.yaml \
-    --s3-bucket REPLACE_THIS_WITH_YOUR_S3_BUCKET_NAME
+    --s3-bucket sampskov
 ```
 
 Next, the following command will create a Cloudformation Stack and deploy your SAM resources.
@@ -87,8 +89,14 @@ Next, the following command will create a Cloudformation Stack and deploy your S
 ```bash
 sam deploy \
     --template-file packaged.yaml \
-    --stack-name sam_pskov \
+    --stack-name sampskov \
     --capabilities CAPABILITY_IAM
+```
+
+Return from package call recommends
+
+```bash
+aws cloudformation deploy --template-file /private/tmp/sam/sam_pskov/packaged.yaml --stack-name <YOUR STACK NAME>
 ```
 
 > **See [Serverless Application Model (SAM) HOWTO Guide](https://github.com/awslabs/serverless-application-model/blob/master/HOWTO.md) for more details in how to get started.**
@@ -97,9 +105,9 @@ After deployment is complete you can run the following command to retrieve the A
 
 ```bash
 aws cloudformation describe-stacks \
-    --stack-name sam_pskov \
+    --stack-name sampskov \
     --query 'Stacks[].Outputs'
-``` 
+```
 
 ## Testing
 
@@ -120,7 +128,7 @@ AWS CLI commands to package, deploy and describe outputs defined within the clou
 sam package \
     --template-file template.yaml \
     --output-template-file packaged.yaml \
-    --s3-bucket REPLACE_THIS_WITH_YOUR_S3_BUCKET_NAME
+    --s3-bucket sampskov
 
 sam deploy \
     --template-file packaged.yaml \
