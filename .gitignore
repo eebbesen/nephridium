@@ -125,5 +125,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# AWS
+packaged.yaml
 
 # End of https://www.gitignore.io/api/osx,node,linux,windows
