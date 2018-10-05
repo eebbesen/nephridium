@@ -3,8 +3,6 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
     sam_pskov
 
-    Sample SAM Template for sam_pskov
-    
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
     Function:
@@ -19,9 +17,9 @@ Resources:
             CodeUri: hello_world/
             Handler: app.lambdaHandler
             Runtime: nodejs8.10
-            Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-                Variables:
-                    PARAM1: VALUE
+            # Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+            #     Variables:
+            #         PARAM1: VALUE
             Events:
                 HelloWorld:
                     Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
