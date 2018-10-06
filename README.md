@@ -42,7 +42,7 @@ sam local start-api
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/hello`.
 
-To see more, test with `curl -vvv -X GET http://127.0.0.1:3000/hello -d '{"cityName":"Saint Paul"}'`. Note that CloudFront returns 403 when it receives a GET with a body, so use query parameters instead there: `url -vvv -X GET http://127.0.0.1:3000/hello?cityName=Saint%20Paul`.
+To see more, test with `curl -vvv -X GET http://127.0.0.1:3000/hello -d '{"cityName":"Saint Paul"}'`. Note that CloudFront returns 403 when it receives a GET with a body, so use query parameters instead there: `curl -vvv -X GET http://127.0.0.1:3000/hello?cityName=Saint%20Paul`.
 
 **SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to understand how to bootstrap this environment (runtime, where the source code is, etc.) - The following excerpt is what the CLI will read in order to initialize an API and its routes:
 
@@ -96,7 +96,7 @@ sam deploy \
 Return from package call recommends
 
 ```bash
-aws cloudformation deploy --template-file /private/tmp/sam/sam_pskov/packaged.yaml --stack-name <YOUR STACK NAME>
+aws cloudformation deploy --template-file /private/tmp/sam/sam_pskov/packaged.yaml --stack-name sampskov
 ```
 
 > **See [Serverless Application Model (SAM) HOWTO Guide](https://github.com/awslabs/serverless-application-model/blob/master/HOWTO.md) for more details in how to get started.**
@@ -132,12 +132,12 @@ sam package \
 
 sam deploy \
     --template-file packaged.yaml \
-    --stack-name sam_pskov \
+    --stack-name sampskov \
     --capabilities CAPABILITY_IAM \
     --parameter-overrides MyParameterSample=MySampleValue
 
 aws cloudformation describe-stacks \
-    --stack-name sam_pskov --query 'Stacks[].Outputs'
+    --stack-name sampskov --query 'Stacks[].Outputs'
 ```
 
 **NOTE**: Alternatively this could be part of package.json scripts section.
@@ -153,3 +153,8 @@ Here are a few ideas that you can use to get more acquainted as to how this over
 Next, you can use the following resources to know more about beyond hello world samples and how others structure their Serverless applications:
 
 * [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)
+
+## Testing
+```bash
+curl -vvv https://f722z4ovi4.execute-api.us-east-1.amazonaws.com/Prod/hello?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs
+```

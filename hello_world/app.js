@@ -1,7 +1,9 @@
+'use strict';
 
 const axios = require('axios')
 const url = 'http://checkip.amazonaws.com/';
-let response;
+const dayMs  = 86400000;
+const weekMs = 604800000;
 
 /**
  *
@@ -38,25 +40,80 @@ let response;
  *
  */
 exports.lambdaHandler = async (event, context) => {
+  let response;
   try {
     let params = null;
-    console.log('EVENT: ', event);
     console.log('EVENT_QSP: ', event.queryStringParameters);
     if (event && event.queryStringParameters){
       params = event.queryStringParameters;
     }
-    const ret = await axios(url);
-    response = {
-      'statusCode': 200,
-      'body': JSON.stringify({
-        message: 'hello worldsss' + JSON.stringify(params),
-        location: ret.data.trim()
-      })
+
+    const errors = this.buildErrors(params);
+    if (errors.length > 0) {
+      response  = {
+        'statusCode': 400,
+        'body': JSON.stringify({message: errors})
+      };
+    } else {
+      const url = this.buildUrl(params);
+      const ret = await axios(url);
+      response = {
+        'statusCode': 200,
+        'body': JSON.stringify(ret.data)
+      };
     }
   } catch (err) {
       console.log(err);
       return err;
   }
 
-  return response
+  return response;
 };
+
+exports.buildErrors = function(params) {
+  let response = '';
+  if (typeof params.time_column === 'undefined') {
+    response += 'You must supply a time_column parameter.';
+  }
+  if (typeof params.url === 'undefined') {
+    if (response.length > 0) {
+      response += ' ';
+    }
+    response += 'You must supply a url parameter. Make sure the url parameter is last.';
+  }
+
+  return response;
+}
+
+exports.buildUrl = function(params) {
+  const baseUrl = params.url;
+  const timeColumn = params.time_column;
+  const timeRange = params.time_range || 'w';
+
+  const dateVal = this.buildDate(new Date().toISOString(), timeRange);
+
+  let pString = '';
+  for (let key in this.buildParams(params)) {
+    pString += `&${key}=${params[key]}`;
+  }
+
+  return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}`;
+};
+
+exports.buildParams = function(params) {
+  delete params.time_column;
+  delete params.url
+  delete params.time_range;
+  return params;
+};
+
+exports.buildDate = function(date, range) {
+  const initDate = new Date(`${this.normalizeDate(date)}T00:00:00.000`);
+  let modifier = range == 'w' ? weekMs : dayMs;
+  const endDate = new Date(initDate - modifier);
+  return this.normalizeDate(endDate.toISOString());
+}
+
+exports.normalizeDate = function(date) {
+  return date.substring(0,10);
+}
