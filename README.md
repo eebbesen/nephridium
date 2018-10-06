@@ -2,13 +2,13 @@
 An [AWS Serverless Appliction](https://aws.amazon.com/serverless/) that produces filtered Socrata datasets. _NOT_ affiliated with or endorsed by [Socrata](https://socrata.com/company-info/).
 
 ## Why?
-Hundreds of local, state and federal government organizations use [Socrata](https://socrata.com/company-info/) to host open data portals to share data sets with the public. The public can interact with these datasets in various ways, but these ways may not be intuitive for the general public. And people who understand how to manipulate these datasets don't want to repeat the same manual tasks every day, week or month.
+Hundreds of local, state and federal government organizations use [Socrata](https://socrata.com/company-info/) to share data sets with the public. The public can interact with these datasets in various ways, but these ways may not be intuitive for the general public. And people who understand how to manipulate these datasets don't want to repeat the same manual tasks every day, week or month.
 
 *nephridium* addresses the use case where a dynamically filtered Socrata dataset is desired over time. You specify the Sorata dataset, tell *nephridium* what the date attribute is and you get an HTML table of the data! *nephridium* offers additional parameters you can use to choose which attributes you want to display and to further filter your dataset.
 
 
 ### A use case
-#### A repetative task
+#### A repetitive task
 A [Saint Paul District Council](https://www.stpaul.gov/residents/live-saint-paul/neighborhoods/district-councils) Executive Director wants to know all of the resident service requests that created in her district the past week. And she wants this information every week.
 
 Saint Paul provides [the data](https://information.stpaul.gov/City-Infrastructure/Resident-Service-Requests-Dataset/3w6i-nfpw), but only in a way where the Executive Director has to enter filter information every single time she visits the site.
@@ -17,10 +17,10 @@ Saint Paul provides [the data](https://information.stpaul.gov/City-Infrastructur
 Since *nephridium* uses a look-back date filter, one URL will work in perpetuity. For example, `https://your_aws_url/?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs` will produce the previous 7 days' results for service requests in District 8.
 
 #### ...that can become a no-click solution
-Once an URL is created it can be used with (IFTTT)[https://ifttt.com], [Zapier](https://zapier.com/), [cron](https://en.wikipedia.org/wiki/Cron) or any other automation tool to automatically send an email with the requested data.
+Once an URL is created it can be used with [IFTTT](https://ifttt.com), [Zapier](https://zapier.com/), [cron](https://en.wikipedia.org/wiki/Cron) or any other automation tool to scheule sending of an email with the requested data. Or cause an email to be sent when new data is found.
 
 ## The name
-[Nephridium](https://en.wikipedia.org/wiki/Nephridium) is like a kidney for an invertabrate. It filters things, just like this code.
+[Nephridium](https://en.wikipedia.org/wiki/Nephridium) is like a kidney for an invertabrate. It filters things, just like this project.
 
 ## Build an URL for *nephridium*
 You will need
@@ -177,6 +177,18 @@ aws cloudformation describe-stacks \
     --stack-name BUCKET_NAME --query 'Stacks[].Outputs'
 ```
 
+In the output from the last command you'll find your API URL on AWS.
+
+```bash
+...
+        {
+            "Description": "API Gateway endpoint URL for Prod stage for Report function",
+            "OutputKey": "ReportApi",
+            "OutputValue": "https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/"
+        }
+...
+```
+
 **NOTE**: Alternatively this could be part of package.json scripts section.
 
 ## Bringing to the next level
@@ -203,5 +215,5 @@ curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?district_c
 ```bash
 curl -vvv -X GET 'http://127.0.0.1:3000/?district_council=8&time_column=request_date&to_remove=count,map_location&url=https://information.stpaul.gov/resource/qtkm-psvs'
 
-
+curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?district_council=8&time_column=request_date&to_remove=count,map_location&url=https://information.stpaul.gov/resource/qtkm-psvs'
 ```
