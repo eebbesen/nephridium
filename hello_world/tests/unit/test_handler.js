@@ -37,8 +37,8 @@ describe('Tests index', () => {
     });
   });
 
-  describe('buildParams', () => {
-    it('removes what it should', () => {
+  describe('buildCustomParams', () => {
+    it('removes default removes', () => {
       const params = {
         first: 'fone',
         time_column: 'created_at',
@@ -50,10 +50,28 @@ describe('Tests index', () => {
         third: 'tone'
       };
 
-      const result = app.buildParams(params);
+      const result = app.buildCustomParams(params);
 
       expect(Object.keys(result).length).to.equal(2);
       expect(result.first).to.equal('fone');
+      expect(result.third).to.equal('tone');
+    });
+
+    it('removes default removes and custom to_remove', () => {
+      const params = {
+        first: 'fone',
+        time_column: 'created_at',
+        url: 'https://a.socrata.dataset.com',
+        third: 'tone',
+        to_remove: 'c1,c5,first'
+      };
+      const expected = {
+        third: 'tone'
+      };
+
+      const result = app.buildCustomParams(params);
+
+      expect(Object.keys(result).length).to.equal(1);
       expect(result.third).to.equal('tone');
     });
   });
@@ -81,10 +99,10 @@ describe('Tests index', () => {
       };
 
       const response = await app.lambdaHandler(event, null);
-      const body = JSON.parse(response.body);
+      const body = response.body;
 
       expect(response.statusCode).to.equal(200);
-      Object.keys(body).forEach( k => expect(body[k].district_council).to.equal('8'));
+      expect(body).to.contain('Complaint');
     });
 
     it('retrns a descriptive error message when no time_column', async () => {
@@ -129,4 +147,15 @@ describe('Tests index', () => {
     });
   });
 
+  describe('removeAttributes', () => {
+    it('removes attributes from every row', () => {
+      const data = [{name:'first', a:'1', b:'2', c:'3'},
+                    {name:'first', a:'1', b:'2', c:'3'},
+                    {name:'first', a:'1', b:'2', c:'3'}];
+
+      const result = app.removeAttributes(data, 'a,b');
+
+      result.forEach( r => expect(typeof r['a']).to.equal('undefined') && expect(typeof r['b']).to.equal('undefined'));
+    });
+  });
 });

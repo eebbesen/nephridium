@@ -155,6 +155,14 @@ Next, you can use the following resources to know more about beyond hello world 
 * [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)
 
 ## Testing
+Custom parameters in query
 ```bash
-curl -vvv https://f722z4ovi4.execute-api.us-east-1.amazonaws.com/Prod/hello?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs
+curl -vvv 'https://f722z4ovi4.execute-api.us-east-1.amazonaws.com/Prod/hello?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs'
+
+curl -vvv 'http://127.0.0.1:3000/hello?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs'
+```
+
+Custom parameters in query with filtered attributes
+```bash
+curl -vvv -X GET 'http://127.0.0.1:3000/hello?district_council=8&time_column=request_date&to_remove=count,map_location&url=https://information.stpaul.gov/resource/qtkm-psvs'
 ```

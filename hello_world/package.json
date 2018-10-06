@@ -7,7 +7,8 @@
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "tableify": "^1.1.0"
   },
   "scripts": {
     "test": "mocha tests/unit/"
