@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-    sam_pskov
+    sam_nephridium
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -11,32 +11,32 @@ Globals:
 
 Resources:
 
-    HelloWorldFunction:
+    ReportFunction:
         Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
         Properties:
-            CodeUri: hello_world/
+            CodeUri: nephridium/
             Handler: app.lambdaHandler
             Runtime: nodejs8.10
             # Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
             #     Variables:
             #         PARAM1: VALUE
             Events:
-                HelloWorld:
+                Report:
                     Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
                     Properties:
-                        Path: /hello
+                        Path: /
                         Method: get
 
 Outputs:
 
-    HelloWorldApi:
-      Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+    ReportApi:
+      Description: "API Gateway endpoint URL for Prod stage for Report function"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
 
-    HelloWorldFunction:
-      Description: "Hello World Lambda Function ARN"
-      Value: !GetAtt HelloWorldFunction.Arn
+    ReportFunction:
+      Description: "Report Lambda Function ARN"
+      Value: !GetAtt ReportFunction.Arn
 
-    HelloWorldFunctionIamRole:
-      Description: "Implicit IAM Role created for Hello World function"
-      Value: !GetAtt HelloWorldFunctionRole.Arn
+    ReportFunctionIamRole:
+      Description: "Implicit IAM Role created for Report function"
+      Value: !GetAtt ReportFunctionRole.Arn

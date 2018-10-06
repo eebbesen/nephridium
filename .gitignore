@@ -128,4 +128,6 @@ $RECYCLE.BIN/
 # AWS
 packaged.yaml
 
+local_snippets.txt
+
 # End of https://www.gitignore.io/api/osx,node,linux,windows

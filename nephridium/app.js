@@ -127,7 +127,6 @@ exports.buildCustomParams = function(params) {
   const custom_no = (params.to_remove ? ',' + params.to_remove : '');
   const no = ('time_column,url,time_range,to_remove' + custom_no).split(',');
   no.forEach(key => { delete params[key]; });
-  console.log('xxxxxxx', params)
 
   return params;
 };
