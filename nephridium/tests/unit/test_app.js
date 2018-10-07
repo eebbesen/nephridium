@@ -1,7 +1,8 @@
-'use strict';
 
-const app = require('../../app.js');
+
 const chai = require('chai');
+const app = require('../../app.js');
+
 const expect = chai.expect;
 
 
@@ -27,12 +28,12 @@ describe('Tests index', () => {
       const params = {
         url: 'https://a.socrata.dataset.com/resource/abcd-efgh',
         time_range: 'w',
-        time_column: 'request_date'
+        time_column: 'request_date',
       };
 
       const result = app.buildUrl(params);
 
-      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27`)
+      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27`);
     });
   });
 
@@ -42,7 +43,7 @@ describe('Tests index', () => {
         first: 'fone',
         time_column: 'created_at',
         url: 'https://a.socrata.dataset.com',
-        third: 'tone'
+        third: 'tone',
       };
 
       const result = app.buildCustomParams(params);
@@ -58,7 +59,7 @@ describe('Tests index', () => {
         time_column: 'created_at',
         url: 'https://a.socrata.dataset.com',
         third: 'tone',
-        to_remove: 'c1,c5,first'
+        to_remove: 'c1,c5,first',
       };
 
       const result = app.buildCustomParams(params);
@@ -71,7 +72,7 @@ describe('Tests index', () => {
   describe('buildErrors', () => {
     it('retrns a descriptive error message when no url and no time_column', () => {
       const params = {
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = app.buildErrors(params);
@@ -88,7 +89,7 @@ describe('Tests index', () => {
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
         time_column: 'request_date',
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -102,7 +103,7 @@ describe('Tests index', () => {
       const event = new Object();
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -116,7 +117,7 @@ describe('Tests index', () => {
       const event = new Object();
       event.queryStringParameters = {
         time_column: 'created_at',
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -129,7 +130,7 @@ describe('Tests index', () => {
     it('retrns a descriptive error message when no url and no time_column', async () => {
       const event = new Object();
       event.queryStringParameters = {
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -142,13 +143,19 @@ describe('Tests index', () => {
 
   describe('removeAttributes', () => {
     it('removes attributes from every row', () => {
-      const data = [{name:'first', a:'1', b:'2', c:'3'},
-                    {name:'first', a:'1', b:'2', c:'3'},
-                    {name:'first', a:'1', b:'2', c:'3'}];
+      const data = [{
+        name: 'first', a: '1', b: '2', c: '3',
+      },
+      {
+        name: 'first', a: '1', b: '2', c: '3',
+      },
+      {
+        name: 'first', a: '1', b: '2', c: '3',
+      }];
 
       const result = app.removeAttributes(data, 'a,b');
 
-      result.forEach( r => expect(typeof r['a']).to.equal('undefined') && expect(typeof r['b']).to.equal('undefined'));
+      result.forEach(r => expect(typeof r.a).to.equal('undefined') && expect(typeof r.b).to.equal('undefined'));
     });
   });
 });

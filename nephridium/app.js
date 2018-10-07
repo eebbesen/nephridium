@@ -1,9 +1,7 @@
-'use strict';
-
-const axios = require('axios')
+const axios = require('axios');
 const tableify = require('tableify');
 
-const dayMs  = 86400000;
+const dayMs = 86400000;
 const weekMs = 604800000;
 
 /**
@@ -43,48 +41,35 @@ const weekMs = 604800000;
 exports.lambdaHandler = async (event, context) => {
   let response;
   try {
-    const params = event.queryStringParameters;;
+    const params = event.queryStringParameters;
     console.log('EVENT_QSP: ', event.queryStringParameters);
 
     const errors = this.buildErrors(params);
     if (errors.length > 0) {
-      response  = {
-        'statusCode': 400,
-        'body': JSON.stringify({message: errors})
+      response = {
+        statusCode: 400,
+        body: JSON.stringify({ message: errors }),
       };
     } else {
       const url = this.buildUrl(params);
       const ret = await axios(url);
-      const ret_data = this.removeAttributes(ret.data, params.to_remove);
-      const web = this.html(ret_data)
+      const retData = this.removeAttributes(ret.data, params.to_remove);
+      const web = this.html(retData);
       response = {
-        'statusCode': 200,
-        'headers': { 'Content-Type': 'text/html' },
-        'body': web
+        statusCode: 200,
+        headers: { 'Content-Type': 'text/html' },
+        body: web,
       };
     }
   } catch (err) {
-      console.log(err);
-      return err;
+    console.log(err);
+    return err;
   }
 
   return response;
 };
 
-exports.postProcessData = function(params, custom_no) {
-  let ret_data = Object.assign({}, params);
-
-  if (no_columns) {
-    const no = custom_no.split(',');
-    data.forEach( d => {
-      no.forEach(c => { delete d[c]; });
-    });
-  }
-
-  return ret_data
-}
-
-exports.buildErrors = function(params) {
+exports.buildErrors = function (params) {
   let response = '';
   if (typeof params.time_column === 'undefined') {
     response += 'You must supply a time_column parameter.';
@@ -97,7 +82,7 @@ exports.buildErrors = function(params) {
   return response;
 };
 
-exports.buildUrl = function(params) {
+exports.buildUrl = function (params) {
   const baseUrl = params.url;
   const timeColumn = params.time_column;
   const timeRange = params.time_range || 'w';
@@ -105,7 +90,7 @@ exports.buildUrl = function(params) {
   const dateVal = this.buildDate(new Date().toISOString(), timeRange);
 
   let pString = '';
-  for (let key in this.buildCustomParams(params)) {
+  for (const key in this.buildCustomParams(params)) {
     pString += `&${key}=${params[key]}`;
   }
 
@@ -113,43 +98,43 @@ exports.buildUrl = function(params) {
 };
 
 // removes some params for all calls, plus any keys in the to_remove parameter
-exports.buildCustomParams = function(params) {
-  const data = Object.assign({}, params)
-  const custom_no = (params.to_remove ? ',' + params.to_remove : '');
-  const no = ('time_column,url,time_range,to_remove' + custom_no).split(',');
-  no.forEach(key => { delete data[key]; });
+exports.buildCustomParams = function (params) {
+  const data = Object.assign({}, params);
+  const customNo = (params.to_remove ? `,${params.to_remove}` : '');
+  const no = (`time_column,url,time_range,to_remove${customNo}`).split(',');
+  no.forEach((key) => { delete data[key]; });
 
   return data;
 };
 
-exports.buildDate = function(date, range) {
+exports.buildDate = function (date, range) {
   const initDate = new Date(`${this.normalizeDate(date)}T00:00:00.000`);
-  let modifier = range == 'w' ? weekMs : dayMs;
+  const modifier = range == 'w' ? weekMs : dayMs;
   const endDate = new Date(initDate - modifier);
 
   return this.normalizeDate(endDate.toISOString());
-}
-
-exports.normalizeDate = function(date) {
-  return date.substring(0,10);
 };
 
-exports.html = function(data) {
+exports.normalizeDate = function (date) {
+  return date.substring(0, 10);
+};
+
+exports.html = function (data) {
   const table = tableify(data);
 
   return `
 <html>
 <head><style>${this.css()}</style></head>
 <body><div>${table}</div></body>
-</html>`
+</html>`;
 };
 
 // probably should not mutate?
-exports.removeAttributes = function(data, toRemove) {
+exports.removeAttributes = function (data, toRemove) {
   if (toRemove) {
     const tr = toRemove.split(',');
-    data.forEach(row => {
-      tr.forEach(rm => {
+    data.forEach((row) => {
+      tr.forEach((rm) => {
         delete row[rm];
         return row;
       });
@@ -159,7 +144,7 @@ exports.removeAttributes = function(data, toRemove) {
   return data;
 };
 
-exports.css = function() {
+exports.css = function () {
   return `
 * {
   border-collapse: collapse;
