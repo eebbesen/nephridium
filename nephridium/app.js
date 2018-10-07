@@ -148,10 +148,12 @@ exports.css = function () {
 * {
   border-collapse: collapse;
   padding: 5px;
+  font-family: helvetica;
 }
 th {
   text-transform: uppercase;
   border: 2px solid black;
+  background-color: lightblue;
 }
 
 td {
