@@ -3,7 +3,7 @@
 const chai = require('chai');
 const app = require('../../app.js');
 
-const expect = chai.expect;
+const { expect } = chai;
 
 
 describe('Tests index', () => {
@@ -23,7 +23,6 @@ describe('Tests index', () => {
 
   describe('buildUrl', () => {
     it('builds url for one week', () => {
-      const now = new Date();
       const expectedDate = app.buildDate(new Date().toISOString(), 'w');
       const params = {
         url: 'https://a.socrata.dataset.com/resource/abcd-efgh',
@@ -85,7 +84,7 @@ describe('Tests index', () => {
     // add .skip or comment out if you don't want to execute this live test
     it('gets data with additional filters', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
-      const event = new Object();
+      const event = {};
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
         time_column: 'request_date',
@@ -93,14 +92,14 @@ describe('Tests index', () => {
       };
 
       const response = await app.lambdaHandler(event, null);
-      const body = response.body;
+      const { body } = response;
 
       expect(response.statusCode).to.equal(200);
       expect(body).to.contain('Complaint');
     });
 
     it('retrns a descriptive error message when no time_column', async () => {
-      const event = new Object();
+      const event = {};
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
         district_council: '8',
@@ -114,7 +113,7 @@ describe('Tests index', () => {
     });
 
     it('retrns a descriptive error message when no url', async () => {
-      const event = new Object();
+      const event = {};
       event.queryStringParameters = {
         time_column: 'created_at',
         district_council: '8',
@@ -128,7 +127,7 @@ describe('Tests index', () => {
     });
 
     it('retrns a descriptive error message when no url and no time_column', async () => {
-      const event = new Object();
+      const event = {};
       event.queryStringParameters = {
         district_council: '8',
       };

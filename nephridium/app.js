@@ -90,9 +90,9 @@ exports.buildUrl = function (params) {
   const dateVal = this.buildDate(new Date().toISOString(), timeRange);
 
   let pString = '';
-  for (const key in this.buildCustomParams(params)) {
+  Object.keys(this.buildCustomParams(params)).forEach((key) => {
     pString += `&${key}=${params[key]}`;
-  }
+  });
 
   return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}`;
 };
@@ -109,7 +109,7 @@ exports.buildCustomParams = function (params) {
 
 exports.buildDate = function (date, range) {
   const initDate = new Date(`${this.normalizeDate(date)}T00:00:00.000`);
-  const modifier = range == 'w' ? weekMs : dayMs;
+  const modifier = range === 'w' ? weekMs : dayMs;
   const endDate = new Date(initDate - modifier);
 
   return this.normalizeDate(endDate.toISOString());
@@ -136,7 +136,6 @@ exports.removeAttributes = function (data, toRemove) {
     data.forEach((row) => {
       tr.forEach((rm) => {
         delete row[rm];
-        return row;
       });
     });
   }
