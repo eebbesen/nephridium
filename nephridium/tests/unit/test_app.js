@@ -92,9 +92,9 @@ describe('Tests index', () => {
       };
 
       const response = await app.lambdaHandler(event, null);
-      const { body } = response;
+      const { body, statusCode } = response;
 
-      expect(response.statusCode).to.equal(200);
+      expect(statusCode).to.equal(200);
       expect(body).to.contain('Complaint');
     });
 
@@ -155,6 +155,21 @@ describe('Tests index', () => {
       const result = app.removeAttributes(data, 'a,b');
 
       result.forEach(r => expect(typeof r.a).to.equal('undefined') && expect(typeof r.b).to.equal('undefined'));
+    });
+  });
+
+  describe('transformDates', () => {
+    it('removes attributes from every row', () => {
+      const data = [{
+        name: '2018-10-01T00:00:00.000', a: '2018-10-01T00:00:00.001', b: 2, c: '3',
+      }];
+
+      const { name, a, b, c } = app.transformDates(data)[0];
+
+      expect(name).to.equal('2018-10-01');
+      expect(a).to.equal('2018-10-01T00:00:00.001');
+      expect(b).to.equal(2);
+      expect(c).to.equal('3');
     });
   });
 });

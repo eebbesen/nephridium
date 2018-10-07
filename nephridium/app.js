@@ -54,7 +54,8 @@ exports.lambdaHandler = async (event, context) => {
       const url = this.buildUrl(params);
       const ret = await axios(url);
       const retData = this.removeAttributes(ret.data, params.to_remove);
-      const web = this.html(retData);
+      const modData = this.transformDates(retData);
+      const web = this.html(modData);
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
@@ -143,6 +144,16 @@ exports.removeAttributes = function (data, toRemove) {
   return data;
 };
 
+exports.transformDates = function (data) {
+  data.forEach((row) => {
+    Object.keys(row).forEach((k) => {
+      if (typeof row[k] === 'string') { row[k] = row[k].replace('T00:00:00.000', ''); }
+    });
+  });
+
+  return data;
+};
+
 exports.css = function () {
   return `
 * {
@@ -150,6 +161,7 @@ exports.css = function () {
   padding: 5px;
   font-family: helvetica;
 }
+
 th {
   text-transform: uppercase;
   border: 2px solid black;
