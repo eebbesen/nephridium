@@ -1,9 +1,9 @@
-'use strict';
 
-const app = require('../../app.js');
+
 const chai = require('chai');
-const expect = chai.expect;
-var event, context;
+const app = require('../../app.js');
+
+const { expect } = chai;
 
 
 describe('Tests index', () => {
@@ -23,17 +23,16 @@ describe('Tests index', () => {
 
   describe('buildUrl', () => {
     it('builds url for one week', () => {
-      const now = new Date();
       const expectedDate = app.buildDate(new Date().toISOString(), 'w');
       const params = {
         url: 'https://a.socrata.dataset.com/resource/abcd-efgh',
         time_range: 'w',
-        time_column: 'request_date'
+        time_column: 'request_date',
       };
 
       const result = app.buildUrl(params);
 
-      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27`)
+      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27`);
     });
   });
 
@@ -43,11 +42,7 @@ describe('Tests index', () => {
         first: 'fone',
         time_column: 'created_at',
         url: 'https://a.socrata.dataset.com',
-        third: 'tone'
-      };
-      const expected = {
-        first: 'fone',
-        third: 'tone'
+        third: 'tone',
       };
 
       const result = app.buildCustomParams(params);
@@ -63,10 +58,7 @@ describe('Tests index', () => {
         time_column: 'created_at',
         url: 'https://a.socrata.dataset.com',
         third: 'tone',
-        to_remove: 'c1,c5,first'
-      };
-      const expected = {
-        third: 'tone'
+        to_remove: 'c1,c5,first',
       };
 
       const result = app.buildCustomParams(params);
@@ -79,7 +71,7 @@ describe('Tests index', () => {
   describe('buildErrors', () => {
     it('retrns a descriptive error message when no url and no time_column', () => {
       const params = {
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = app.buildErrors(params);
@@ -89,27 +81,28 @@ describe('Tests index', () => {
   });
 
   describe('lambdaHandler', () => {
+    // add .skip or comment out if you don't want to execute this live test
     it('gets data with additional filters', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
-      event = new Object();
+      const event = {};
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
         time_column: 'request_date',
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = await app.lambdaHandler(event, null);
-      const body = response.body;
+      const { body, statusCode } = response;
 
-      expect(response.statusCode).to.equal(200);
+      expect(statusCode).to.equal(200);
       expect(body).to.contain('Complaint');
     });
 
     it('retrns a descriptive error message when no time_column', async () => {
-      event = new Object();
+      const event = {};
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -120,10 +113,10 @@ describe('Tests index', () => {
     });
 
     it('retrns a descriptive error message when no url', async () => {
-      event = new Object();
+      const event = {};
       event.queryStringParameters = {
         time_column: 'created_at',
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -134,9 +127,9 @@ describe('Tests index', () => {
     });
 
     it('retrns a descriptive error message when no url and no time_column', async () => {
-      event = new Object();
+      const event = {};
       event.queryStringParameters = {
-        district_council: '8'
+        district_council: '8',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -149,13 +142,34 @@ describe('Tests index', () => {
 
   describe('removeAttributes', () => {
     it('removes attributes from every row', () => {
-      const data = [{name:'first', a:'1', b:'2', c:'3'},
-                    {name:'first', a:'1', b:'2', c:'3'},
-                    {name:'first', a:'1', b:'2', c:'3'}];
+      const data = [{
+        name: 'first', a: '1', b: '2', c: '3',
+      },
+      {
+        name: 'first', a: '1', b: '2', c: '3',
+      },
+      {
+        name: 'first', a: '1', b: '2', c: '3',
+      }];
 
       const result = app.removeAttributes(data, 'a,b');
 
-      result.forEach( r => expect(typeof r['a']).to.equal('undefined') && expect(typeof r['b']).to.equal('undefined'));
+      result.forEach(r => expect(typeof r.a).to.equal('undefined') && expect(typeof r.b).to.equal('undefined'));
+    });
+  });
+
+  describe('transformDates', () => {
+    it('simplifies dates without timestamp', () => {
+      const data = [{
+        name: '2018-10-01T00:00:00.000', a: '2018-10-01T00:00:00.001', b: 2, c: '3',
+      }];
+
+      const { name, a, b, c } = app.transformDates(data)[0];
+
+      expect(name).to.equal('2018-10-01');
+      expect(a).to.equal('2018-10-01T00:00:00.001');
+      expect(b).to.equal(2);
+      expect(c).to.equal('3');
     });
   });
 });

@@ -11,10 +11,14 @@
     "tableify": "^1.1.0"
   },
   "scripts": {
-    "test": "mocha tests/unit/"
+    "test": "mocha tests/unit/",
+    "lint": "node_modules/eslint/bin/eslint.js ."
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
     "mocha": "^5.1.1"
   }
 }
