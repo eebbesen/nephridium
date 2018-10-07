@@ -159,7 +159,7 @@ describe('Tests index', () => {
   });
 
   describe('transformDates', () => {
-    it('removes attributes from every row', () => {
+    it('simplifies dates without timestamp', () => {
       const data = [{
         name: '2018-10-01T00:00:00.000', a: '2018-10-01T00:00:00.001', b: 2, c: '3',
       }];
