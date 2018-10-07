@@ -114,6 +114,25 @@ Firstly, we need a `S3 bucket` where we can upload our Lambda functions packaged
 aws s3 mb s3://BUCKET_NAME
 ```
 
+In order to _publish_ your application to [the Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/) you'll need to create a policy for your S3 bucket like this sample:
+```bash
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service":  "serverlessrepo.amazonaws.com"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::BUCKET_NAME/*"
+        }
+    ]
+}
+```
+
+See https://docs.aws.amazon.com/serverlessrepo/latest/devguide/serverless-app-publishing-applications.html for more details on publishing.
+
 Next, run the following command to package our Lambda function to S3:
 
 ```bash
@@ -191,7 +210,9 @@ In the output from the last command you'll find your API URL on AWS.
 
 **NOTE**: Alternatively this could be part of package.json scripts section.
 
-## Bringing to the next level
+## Publishing to [the Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)
+
+See https://docs.aws.amazon.com/serverlessrepo/latest/devguide/serverless-app-publishing-applications.html for instructions.
 
 
 ## API testing
