@@ -43,14 +43,8 @@ const weekMs = 604800000;
 exports.lambdaHandler = async (event, context) => {
   let response;
   try {
-    let params = null;
+    const params = event.queryStringParameters;;
     console.log('EVENT_QSP: ', event.queryStringParameters);
-    if (event && event.queryStringParameters){
-      params = event.queryStringParameters;
-    }
-
-    // need to do because we mutate later
-    const to_remove = params.to_remove
 
     const errors = this.buildErrors(params);
     if (errors.length > 0) {
@@ -61,13 +55,11 @@ exports.lambdaHandler = async (event, context) => {
     } else {
       const url = this.buildUrl(params);
       const ret = await axios(url);
-      const ret_data = this.removeAttributes(ret.data, to_remove);
+      const ret_data = this.removeAttributes(ret.data, params.to_remove);
       const web = this.html(ret_data)
       response = {
         'statusCode': 200,
-        'headers': {
-          'Content-Type': 'text/html'
-        },
+        'headers': { 'Content-Type': 'text/html' },
         'body': web
       };
     }
@@ -79,8 +71,8 @@ exports.lambdaHandler = async (event, context) => {
   return response;
 };
 
-exports.postProcessData = function(data, custom_no) {
-  let ret_data = data;
+exports.postProcessData = function(params, custom_no) {
+  let ret_data = Object.assign({}, params);
 
   if (no_columns) {
     const no = custom_no.split(',');
@@ -120,15 +112,14 @@ exports.buildUrl = function(params) {
   return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}`;
 };
 
-// is this a problem that it mutates?
-// a: yes, it causes us to have to store to_remove
 // removes some params for all calls, plus any keys in the to_remove parameter
 exports.buildCustomParams = function(params) {
+  const data = Object.assign({}, params)
   const custom_no = (params.to_remove ? ',' + params.to_remove : '');
   const no = ('time_column,url,time_range,to_remove' + custom_no).split(',');
-  no.forEach(key => { delete params[key]; });
+  no.forEach(key => { delete data[key]; });
 
-  return params;
+  return data;
 };
 
 exports.buildDate = function(date, range) {

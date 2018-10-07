@@ -3,7 +3,6 @@
 const app = require('../../app.js');
 const chai = require('chai');
 const expect = chai.expect;
-var event, context;
 
 
 describe('Tests index', () => {
@@ -45,10 +44,6 @@ describe('Tests index', () => {
         url: 'https://a.socrata.dataset.com',
         third: 'tone'
       };
-      const expected = {
-        first: 'fone',
-        third: 'tone'
-      };
 
       const result = app.buildCustomParams(params);
 
@@ -64,9 +59,6 @@ describe('Tests index', () => {
         url: 'https://a.socrata.dataset.com',
         third: 'tone',
         to_remove: 'c1,c5,first'
-      };
-      const expected = {
-        third: 'tone'
       };
 
       const result = app.buildCustomParams(params);
@@ -89,9 +81,10 @@ describe('Tests index', () => {
   });
 
   describe('lambdaHandler', () => {
+    // add .skip or comment out if you don't want to execute this live test
     it('gets data with additional filters', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
-      event = new Object();
+      const event = new Object();
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
         time_column: 'request_date',
@@ -106,7 +99,7 @@ describe('Tests index', () => {
     });
 
     it('retrns a descriptive error message when no time_column', async () => {
-      event = new Object();
+      const event = new Object();
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
         district_council: '8'
@@ -120,7 +113,7 @@ describe('Tests index', () => {
     });
 
     it('retrns a descriptive error message when no url', async () => {
-      event = new Object();
+      const event = new Object();
       event.queryStringParameters = {
         time_column: 'created_at',
         district_council: '8'
@@ -134,7 +127,7 @@ describe('Tests index', () => {
     });
 
     it('retrns a descriptive error message when no url and no time_column', async () => {
-      event = new Object();
+      const event = new Object();
       event.queryStringParameters = {
         district_council: '8'
       };
