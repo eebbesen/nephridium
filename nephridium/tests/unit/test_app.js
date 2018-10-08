@@ -158,18 +158,18 @@ describe('Tests index', () => {
     });
   });
 
-  describe('transformDates', () => {
+  describe('transformData', () => {
     it('simplifies dates without timestamp', () => {
       const data = [{
-        name: '2018-10-01T00:00:00.000', a: '2018-10-01T00:00:00.001', b: 2, c: '3',
+        name_one: '2018-10-01T00:00:00.000', a: '2018-10-01T00:00:00.001', b: 2, c_you_later: '3',
       }];
 
-      const { name, a, b, c } = app.transformDates(data)[0];
+      const result = app.transformData(data)[0];
 
-      expect(name).to.equal('2018-10-01');
-      expect(a).to.equal('2018-10-01T00:00:00.001');
-      expect(b).to.equal(2);
-      expect(c).to.equal('3');
+      expect(result['name one']).to.equal('2018-10-01');
+      expect(result.a).to.equal('2018-10-01T00:00:00.001');
+      expect(result.b).to.equal(2);
+      expect(result['c you later']).to.equal('3');
     });
   });
 });

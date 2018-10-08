@@ -54,7 +54,7 @@ exports.lambdaHandler = async (event, context) => {
       const url = this.buildUrl(params);
       const ret = await axios(url);
       const retData = this.removeAttributes(ret.data, params.to_remove);
-      const modData = this.transformDates(retData);
+      const modData = this.transformData(retData);
       const web = this.html(modData);
       response = {
         statusCode: 200,
@@ -144,10 +144,18 @@ exports.removeAttributes = function (data, toRemove) {
   return data;
 };
 
-exports.transformDates = function (data) {
+// strip time from dates that don't have non-zero time
+// remove underscores from keys
+// todo: refactor to be functional and take in a list of functions to do the transforamtions
+exports.transformData = function (data) {
   data.forEach((row) => {
     Object.keys(row).forEach((k) => {
       if (typeof row[k] === 'string') { row[k] = row[k].replace('T00:00:00.000', ''); }
+      if (typeof k === 'string' && k.includes('_')) {
+        const kNew = k.replace(/_/g, ' ');
+        row[kNew] = row[k];
+        delete row[k];
+      }
     });
   });
 
