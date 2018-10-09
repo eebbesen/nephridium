@@ -32,7 +32,7 @@ describe('Tests index', () => {
 
       const result = app.buildUrl(params);
 
-      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27`);
+      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27&$order=request_date%20DESC`);
     });
   });
 
@@ -161,15 +161,20 @@ describe('Tests index', () => {
   describe('transformData', () => {
     it('simplifies dates without timestamp', () => {
       const data = [{
-        name_one: '2018-10-01T00:00:00.000', a: '2018-10-01T00:00:00.001', b: 2, c_you_later: '3',
+        name_one: '2018-10-01T00:00:00.000',
+        a: '2018-10-01T00:00:01.000',
+        b: 2,
+        c_you_later: '3',
+        d: '7T989'
       }];
 
       const result = app.transformData(data)[0];
 
       expect(result['name one']).to.equal('2018-10-01');
-      expect(result.a).to.equal('2018-10-01T00:00:00.001');
+      expect(result.a).to.equal('2018-10-01 00:00:01');
       expect(result.b).to.equal(2);
       expect(result['c you later']).to.equal('3');
+      expect(result.d).to.equal('7T989');
     });
   });
 });
