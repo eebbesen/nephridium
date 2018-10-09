@@ -124,8 +124,12 @@ exports.html = function (data) {
   const table = tableify(data);
 
   return `
-<html>
-<head><style>${this.css()}</style></head>
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <style>${this.css()}</style>
+  <title>Nephridium-powered page</title>
+</head>
 <body><div>${table}</div></body>
 </html>`;
 };
