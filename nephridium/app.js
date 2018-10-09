@@ -95,7 +95,7 @@ exports.buildUrl = function (params) {
     pString += `&${key}=${params[key]}`;
   });
 
-  return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}`;
+  return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}&$order=${timeColumn}%20DESC`;
 };
 
 // removes some params for all calls, plus any keys in the to_remove parameter
@@ -154,7 +154,12 @@ exports.removeAttributes = function (data, toRemove) {
 exports.transformData = function (data) {
   data.forEach((row) => {
     Object.keys(row).forEach((k) => {
-      if (typeof row[k] === 'string') { row[k] = row[k].replace('T00:00:00.000', ''); }
+      if (typeof row[k] === 'string') {
+        row[k] = row[k].replace('T00:00:00.000', '');
+        if (row[k].match(/\dT\d/) && row[k].endsWith('.000')) {
+          row[k] = row[k].replace('.000', '').replace('T', ' ');
+        }
+      }
       if (typeof k === 'string' && k.includes('_')) {
         const kNew = k.replace(/_/g, ' ');
         row[kNew] = row[k];
