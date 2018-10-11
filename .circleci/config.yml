@@ -5,7 +5,7 @@ jobs:
       ignore:
         - xx
     docker:
-      - image: debian:stretch
+      - image: circleci/node:8-stretch-browsers-legacy
     steps:
       - run:
           name: install_npm
