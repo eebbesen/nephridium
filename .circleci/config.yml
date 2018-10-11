@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: debian:stretch
+    steps:
+      - checkout
+      - run:
+          name: npm_install
+          command: cd nephridium; npm install
+      - run:
+          name: run_tests
+          command: cd nephridium; npm run test
