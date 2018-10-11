@@ -12,7 +12,7 @@ jobs:
           command: sudo npm install -g npm
       - run:
           name: npm_install_packages
-          command: cd nephridium; npm install
+          command: npm install
       - run:
           name: run_tests
-          command: cd nephridium; npm run test
+          command: npm run test
