@@ -1,6 +1,8 @@
 # nephridium
 An [AWS Serverless Appliction](https://aws.amazon.com/serverless/) that produces filtered Socrata datasets. _NOT_ affiliated with or endorsed by [Socrata](https://socrata.com/company-info/).
 
+[![CircleCI](https://circleci.com/gh/eebbesen/nephridium.svg?style=svg)](https://circleci.com/gh/eebbesen/nephridium)
+
 ## Why?
 Hundreds of local, state and federal government organizations use [Socrata](https://socrata.com/company-info/) to share data sets with the public. The public can interact with these datasets in various ways, but these ways may not be intuitive for the general public. And people who understand how to manipulate these datasets don't want to repeat the same manual tasks every day, week or month.
 
