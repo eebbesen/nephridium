@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  build:
+    branches:
+      ignore:
+        - xx
+    working_directory: ~/project
+    docker:
+      - image: circleci/node:8-stretch-browsers-legacy
+    steps:
+      - checkout
+      - run:
+          name: install_npm
+          command: sudo npm install -g npm
+      - run:
+          name: npm_install_packages
+          command: cd nephridium; npm install
+      - run:
+          name: run_tests
+          command: cd nephridium; npm run test
