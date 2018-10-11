@@ -4,7 +4,6 @@ jobs:
     branches:
       ignore:
         - xx
-    working_directory: ~/project/nephridium
     docker:
       - image: circleci/node:8-stretch-browsers-legacy
     steps:
