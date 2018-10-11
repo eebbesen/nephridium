@@ -4,9 +4,11 @@ jobs:
     branches:
       ignore:
         - xx
+    working_directory: ~/project
     docker:
       - image: circleci/node:8-stretch-browsers-legacy
     steps:
+      - checkout
       - run:
           name: install_npm
           command: sudo npm install -g npm
