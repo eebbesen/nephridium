@@ -16,8 +16,8 @@ jobs:
           name: list
           command: pwd; ls -ltra
       - run:
-          name: cd nephridium; npm_install_packages
-          command: npm install
+          name: npm_install_packages
+          command: cd nephridium; npm install
       - run:
           name: run_tests
           command: cd nephridium; npm run test
