@@ -1,9 +1,9 @@
 version: 2
 jobs:
-  branches:
-    ignore:
-      - xx
   build:
+    branches:
+      ignore:
+        - xx
     docker:
       - image: debian:stretch
     steps:
