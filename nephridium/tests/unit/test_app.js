@@ -88,7 +88,7 @@ describe('Tests index', () => {
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
         time_column: 'request_date',
-        district_council: '8',
+        request_type: 'Complaint',
       };
 
       const response = await app.lambdaHandler(event, null);
