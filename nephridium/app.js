@@ -129,6 +129,7 @@ exports.html = function (data) {
 <head>
   <style>${this.css()}</style>
   <title>Nephridium-powered page</title>
+  <link rel="shortcut icon" href="#" />
 </head>
 <body><div>${table}</div></body>
 </html>`;
