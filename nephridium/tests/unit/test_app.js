@@ -102,6 +102,18 @@ describe('Tests index', () => {
 
       expect(statusCode).to.equal(200);
       expect(body).to.contain('Complaint');
+    }).timeout(15000);
+
+    it('handles sending bad data to Socrata', async () => {
+      console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
+      const event = {};
+      event.queryStringParameters = {
+        url: 'https://xxxxxxx',
+        time_column: 'request_date',
+      };
+
+      const response = await app.lambdaHandler(event, null);
+      expect(response['errno']).to.equal('ENOTFOUND');
     });
 
     it('retrns a descriptive error message when no time_column', async () => {
@@ -181,6 +193,14 @@ describe('Tests index', () => {
       expect(result.b).to.equal(2);
       expect(result['c you later']).to.equal('3');
       expect(result.d).to.equal('7T989');
+    });
+  });
+
+  describe('html', () => {
+    it('no data shows message', () => {
+      const result = app.html([]);
+
+      expect(result).to.equal('\n<!DOCTYPE html>\n<html lang=\'en\'>\n<head>\n  <style>\n* {\n  border-collapse: collapse;\n  padding: 5px;\n  font-family: helvetica;\n}\n\nth {\n  text-transform: uppercase;\n  border: 2px solid black;\n  background-color: lightblue;\n}\n\ntd {\n  border: 1px solid black;\n  max-width: 20em;\n}\n\n.error {\n  text-align: center;\n  color: red;\n  font-size: 3em;\n}\n\n\n\n  </style>\n  <title>Nephridium-powered page</title>\n  <link rel="shortcut icon" href="#" />\n</head>\n<body><div><div class="error"><p>No records found</p><p>Please expand your search</p></div></div></body>\n</html>');
     });
   });
 });
