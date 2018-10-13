@@ -64,7 +64,7 @@ exports.lambdaHandler = async (event, context) => {
       };
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return err;
   }
 
@@ -126,8 +126,6 @@ exports.html = function (data) {
   if (data.length < 1) {
     display = '<div class="error"><p>No records found</p><p>Please expand your search</p></div>'
   }
-  console.log('aaaaaa', data.length);
-  console.log('xxxxxx', typeof data);
 
   return `
 <!DOCTYPE html>
