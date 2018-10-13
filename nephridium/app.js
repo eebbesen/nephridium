@@ -3,6 +3,7 @@ const tableify = require('tableify');
 
 const dayMs = 86400000;
 const weekMs = 604800000;
+const thirtyDayMs = 2592000000;
 
 /**
  *
@@ -86,7 +87,7 @@ exports.buildErrors = function (params) {
 exports.buildUrl = function (params) {
   const baseUrl = params.url;
   const timeColumn = params.time_column;
-  const timeRange = params.time_range || 'w';
+  const timeRange = params.time_range || null;
 
   const dateVal = this.buildDate(new Date().toISOString(), timeRange);
 
@@ -110,7 +111,7 @@ exports.buildCustomParams = function (params) {
 
 exports.buildDate = function (date, range) {
   const initDate = new Date(`${this.normalizeDate(date)}T00:00:00.000`);
-  const modifier = range === 'w' ? weekMs : dayMs;
+  const modifier = range === 'w' ? weekMs : thirtyDayMs;
   const endDate = new Date(initDate - modifier);
 
   return this.normalizeDate(endDate.toISOString());
@@ -121,7 +122,12 @@ exports.normalizeDate = function (date) {
 };
 
 exports.html = function (data) {
-  const table = tableify(data);
+  let display = tableify(data);
+  if (data.length < 1) {
+    display = '<div class="error"><p>No records found</p><p>Please expand your search</p></div>'
+  }
+  console.log('aaaaaa', data.length);
+  console.log('xxxxxx', typeof data);
 
   return `
 <!DOCTYPE html>
@@ -129,8 +135,9 @@ exports.html = function (data) {
 <head>
   <style>${this.css()}</style>
   <title>Nephridium-powered page</title>
+  <link rel="shortcut icon" href="#" />
 </head>
-<body><div>${table}</div></body>
+<body><div>${display}</div></body>
 </html>`;
 };
 
@@ -187,6 +194,16 @@ th {
 
 td {
   border: 1px solid black;
+  max-width: 20em;
 }
+
+.error {
+  text-align: center;
+  color: red;
+  font-size: 3em;
+}
+
+
+
   `;
 };

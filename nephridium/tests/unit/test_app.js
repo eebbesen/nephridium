@@ -14,10 +14,16 @@ describe('Tests index', () => {
       expect(result).to.equal('2018-10-05');
     });
 
-    it('buildDate does date arithmetic', () => {
+    it('buildDate does date arithmetic for one week', () => {
       const result = app.buildDate('2018-10-05T05:16:11.345Z', 'w');
 
       expect(result).to.equal('2018-09-28');
+    });
+
+    it('buildDate does date arithmetic for 30 days', () => {
+      const result = app.buildDate('2018-10-05T05:16:11.345Z', null);
+
+      expect(result).to.equal('2018-09-05');
     });
   });
 
@@ -88,7 +94,7 @@ describe('Tests index', () => {
       event.queryStringParameters = {
         url: 'https://information.stpaul.gov/resource/qtkm-psvs',
         time_column: 'request_date',
-        district_council: '8',
+        request_type: 'Complaint',
       };
 
       const response = await app.lambdaHandler(event, null);
