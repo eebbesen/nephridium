@@ -14,10 +14,16 @@ describe('Tests index', () => {
       expect(result).to.equal('2018-10-05');
     });
 
-    it('buildDate does date arithmetic', () => {
+    it('buildDate does date arithmetic for one week', () => {
       const result = app.buildDate('2018-10-05T05:16:11.345Z', 'w');
 
       expect(result).to.equal('2018-09-28');
+    });
+
+    it('buildDate does date arithmetic for 30 days', () => {
+      const result = app.buildDate('2018-10-05T05:16:11.345Z', null);
+
+      expect(result).to.equal('2018-09-05');
     });
   });
 
