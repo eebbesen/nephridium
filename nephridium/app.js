@@ -64,7 +64,7 @@ exports.lambdaHandler = async (event, context) => {
       };
     }
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     return err;
   }
 
