@@ -1,5 +1,5 @@
 # nephridium
-An [AWS Serverless Application](https://aws.amazon.com/serverless/) that produces filtered Socrata datasets. _NOT_ affiliated with or endorsed by [Socrata](https://socrata.com/company-info/).
+An [award-winning](https://devpost.com/software/nephridium) [AWS Serverless Application](https://aws.amazon.com/serverless/) that produces filtered Socrata datasets. _NOT_ affiliated with or endorsed by [Socrata](https://socrata.com/company-info/).
 
 [![CircleCI](https://circleci.com/gh/eebbesen/nephridium.svg?style=svg)](https://circleci.com/gh/eebbesen/nephridium)
 
