@@ -6,7 +6,7 @@ An [award-winning](https://devpost.com/software/nephridium) [AWS Serverless Appl
 ## Why?
 Hundreds of local, state and federal government organizations use [Socrata](https://socrata.com/company-info/) to share data sets with the public. The public can interact with these datasets in various ways, but these ways may not be intuitive for the general public. And people who understand how to manipulate these datasets don't want to repeat the same manual tasks every day, week or month.
 
-*nephridium* addresses the use case where a dynamically filtered Socrata dataset is desired over time. You specify the Sorata dataset, tell *nephridium* what the date attribute is and you get an HTML table of the data! *nephridium* offers additional parameters you can use to choose which attributes you want to display and to further filter your dataset.
+*nephridium* addresses the use case where a dynamically filtered Socrata dataset is desired over time. You specify the Socrata dataset, tell *nephridium* what the date attribute is and you get an HTML table of the data! *nephridium* offers additional parameters you can use to choose which attributes you want to display and to further filter your dataset.
 
 
 ### A use case
