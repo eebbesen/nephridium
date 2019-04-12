@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An AWS Serverless Appliction that produces filtered Socrata datasets",
   "main": "src/app.js",
-  "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
+  "repository": "https://github.com/eebbesen/nephridium",
   "author": "eebbesen",
   "license": "MIT",
   "dependencies": {
@@ -11,7 +11,7 @@
     "tableify": "^1.1.0"
   },
   "scripts": {
-    "test": "nyc  -x '**/tests/**' mocha tests/unit/",
+    "test": "nyc -x '**/tests/**' mocha tests/unit/",
     "lint": "node_modules/eslint/bin/eslint.js ."
   },
   "devDependencies": {
