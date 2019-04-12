@@ -200,7 +200,7 @@ describe('Tests index', () => {
     it('no data shows message', () => {
       const result = app.html([]);
 
-      expect(result).to.equal('\n<!DOCTYPE html>\n<html lang=\'en\'>\n<head>\n  <style>\n* {\n  border-collapse: collapse;\n  padding: 5px;\n  font-family: helvetica;\n}\n\nth {\n  text-transform: uppercase;\n  border: 2px solid black;\n  background-color: lightblue;\n}\n\ntd {\n  border: 1px solid black;\n  max-width: 20em;\n}\n\n.error {\n  text-align: center;\n  color: red;\n  font-size: 3em;\n}\n\n\n\n  </style>\n  <title>Nephridium-powered page</title>\n  <link rel="shortcut icon" href="#" />\n</head>\n<body><div><div class="error"><p>No records found</p><p>Please expand your search</p></div></div></body>\n</html>');
+      expect(result).to.equal('\n<!DOCTYPE html>\n<html lang=\'en\'>\n<head>\n  <style>\n* {\n  border-collapse: collapse;\n  padding: 5px;\n  font-family: helvetica;\n}\n\nth {\n  text-transform: uppercase;\n  border: 2px solid black;\n  background-color: lightblue;\n}\n\ntd {\n  border: 1px solid black;\n  max-width: 20em;\n}\n\n.error {\n  text-align: center;\n  color: red;\n  font-size: 3em;\n}\n  </style>\n  <title>Nephridium-powered page</title>\n  <link rel="shortcut icon" href="#" />\n</head>\n<body><div><div class="error"><p>No records found</p><p>Please expand your search</p></div></div></body>\n</html>');
     });
   });
 });
