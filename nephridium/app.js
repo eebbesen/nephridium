@@ -200,8 +200,5 @@ td {
   color: red;
   font-size: 3em;
 }
-
-
-
   `;
 };
