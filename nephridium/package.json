@@ -8,6 +8,8 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
+    "js-file-download": "^0.4.5",
+    "papaparse": "^4.6",
     "tableify": "^1.1.0"
   },
   "scripts": {
@@ -20,6 +22,6 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "mocha": "^5.1.1",
-    "nyc": "^13.0.1"
+    "nyc": "^13.3.0"
   }
 }

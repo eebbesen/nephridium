@@ -5,6 +5,21 @@ const app = require('../../app.js');
 
 const { expect } = chai;
 
+describe('Parsing', () => {
+  const data = [{
+      name: 'first', a: '1', b: '2', c: '3',
+    },
+    {
+      name: 'second', a: '1', b: '2', c: '3',
+    },
+    {
+      name: 'third', a: '1', b: '2', c: '3',
+    }];
+
+  const result = app.toCsv(data);
+
+  expect(result).to.equal('name,a,b,c\r\nfirst,1,2,3\r\nsecond,1,2,3\r\nthird,1,2,3');
+});
 
 describe('Tests index', () => {
   describe('date functions', () => {

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const Papa = require('papaparse')
 const tableify = require('tableify');
 
 const dayMs = 86400000;
@@ -134,8 +135,18 @@ exports.html = function (data) {
   <style>${this.css()}</style>
   <title>Nephridium-powered page</title>
   <link rel="shortcut icon" href="#" />
+  <script type="text/javascript">
+    function download() {
+      alert('in download');
+    }
+  </script>
 </head>
-<body><div>${display}</div></body>
+<body>
+  <div>
+    <button onclick="download()"></button>
+  </div>
+  <div>${display}</div>
+</body>
 </html>`;
 };
 
@@ -175,6 +186,10 @@ exports.transformData = function (data) {
 
   return data;
 };
+
+exports.toCsv = function(data) {
+  return Papa.unparse(data);
+}
 
 exports.css = function () {
   return `
