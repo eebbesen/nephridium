@@ -85,17 +85,40 @@ cd ../
 ```
 
 #### Local development
+*SAM CLI* is used to emulate both Lambda and API Gateway locally and uses our `template.yaml`. You will want to have to install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed and configure using `aws configure` to avoid MissingAuthenticationToken issues.
+
 You can modify *nephridium* to return JSON instead of HTML, internallly filter your dataset(s) to minimize the number of parameters in your users' URLs, format the output (e.g., custom CSS), or restrict who can access the API.
 
 **Invoking function locally through local API Gateway**
 
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html
 ```bash
-sam local start-api
+sam local start-api --region us-east-1
 ```
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function. Note that CloudFront (but not your local api) returns a 403 when it receives a GET with a body, so you must use query parameters instead.
 
-**SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml`.
+
+**Invoke the ReportFunction directly**
+Assuming you have event info in a file named event_file.json
+```bash
+sam local invoke ReportFunction --region us-east-1 --event event_file.json
+```
+
+event_file.json
+```json
+{
+    "queryStringParameters": {
+        "time_column": "request_date",
+        "url": "https://information.stpaul.gov/resource/qtkm-psvs"
+    }
+}
+```
+
+
+```bash
+echo '{"queryStringParameters": {"time_column": "request_date", "url": "https://information.stpaul.gov/resource/qtkm-psvs"}}'  | sam local invoke ReportFunction --region us-east-1
+```
 
 ### Packaging and deployment
 
