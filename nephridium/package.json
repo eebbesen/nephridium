@@ -1,6 +1,6 @@
 {
   "name": "nephridium",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An AWS Serverless Appliction that produces filtered Socrata datasets",
   "main": "src/app.js",
   "repository": "https://github.com/eebbesen/nephridium",
@@ -8,8 +8,6 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
-    "js-file-download": "^0.4.5",
-    "papaparse": "^4.6",
     "tableify": "^1.1.0"
   },
   "scripts": {

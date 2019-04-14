@@ -1,5 +1,4 @@
 const axios = require('axios');
-const Papa = require('papaparse')
 const tableify = require('tableify');
 
 const dayMs = 86400000;
@@ -135,17 +134,44 @@ exports.html = function (data) {
   <style>${this.css()}</style>
   <title>Nephridium-powered page</title>
   <link rel="shortcut icon" href="#" />
-  <script type="text/javascript">
-    function download() {
-      alert('in download');
-    }
-  </script>
 </head>
 <body>
   <div>
-    <button onclick="download()"></button>
+    <button type="button" onclick="exportTableToCSV('data.csv')">Export Data</button>
   </div>
   <div>${display}</div>
+
+  <script type="text/javascript">
+    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
+    function exportTableToCSV(filename) {
+      let csv = [];
+      const rows = document.querySelectorAll("table tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+
+        for (var j = 0; j < cols.length; j++) {
+          row.push(cols[j].innerText);
+        }
+
+        csv.push(row.join(","));
+      }
+
+      downloadCSV(csv.join('\\n'), filename);
+    }
+
+    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
+    function downloadCSV(csv, filename) {
+      const csvFile = new Blob([csv], {type: "text/csv"});
+      const downloadLink = document.createElement("a");
+      downloadLink.download = filename;
+      downloadLink.href = window.URL.createObjectURL(csvFile);
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+
+      downloadLink.click();
+    }
+  </script>
 </body>
 </html>`;
 };
@@ -186,10 +212,6 @@ exports.transformData = function (data) {
 
   return data;
 };
-
-exports.toCsv = function(data) {
-  return Papa.unparse(data);
-}
 
 exports.css = function () {
   return `
