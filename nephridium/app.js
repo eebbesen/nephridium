@@ -139,10 +139,12 @@ exports.html = function (data, socrataUrl) {
 </head>
 <body>
   <div>
-    <button type="button" onclick="exportTableToCSV('data.csv')">Download</button>
-    <button type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
+    <button id="download" type="button" onclick="exportTableToCSV('data.csv')">Download Data for Excel</button>
   </div>
   <div>${display}</div>
+  <div>
+    <button type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
+  </div>
 
   ${this.javascript()}
 </body>
@@ -174,11 +176,16 @@ exports.transformData = function (data) {
         if (row[k].match(/\dT\d/) && row[k].endsWith('.000')) {
           row[k] = row[k].replace('.000', '').replace('T', ' ');
         }
-      }
-      if (typeof k === 'string' && k.includes('_')) {
-        const kNew = k.replace(/_/g, ' ');
-        row[kNew] = row[k];
-        delete row[k];
+
+        if (k.includes('_')) {
+          const kNew = k.replace(/_/g, ' ');
+          row[kNew] = row[k];
+          delete row[k];
+        }
+
+        if (k == ('location')) {
+          row[k] = this.mapIt(row[k]);
+        }
       }
     });
   });
@@ -210,7 +217,11 @@ td {
   color: red;
   font-size: 3em;
 }
-  `;
+
+#download {
+  margin-right: 10em;
+}
+  `
 };
 
 exports.javascript = function () {
@@ -252,6 +263,6 @@ exports.javascript = function () {
 exports.mapIt = function(address) {
   const URL = 'https://www.google.com/maps/place/';
   const POST = '%20Saint+Paul,+MN';
-  return URL + encodeURIComponent(address) + POST;
+  return `<a href="${URL + encodeURIComponent(address) + POST}">${address}</a>`;
 };
 

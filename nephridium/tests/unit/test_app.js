@@ -6,7 +6,7 @@ const { expect } = chai;
 describe('mapIt', () => {
   const result = app.mapIt('1600 Grand Ave');
 
-  expect(result).to.equal('https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN')
+  expect(result).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>')
 });
 
 describe('Tests index', () => {
@@ -197,13 +197,22 @@ describe('Tests index', () => {
       expect(result['c you later']).to.equal('3');
       expect(result.d).to.equal('7T989');
     });
+
+    it('decorates locations', () => {
+      const data = [{
+        name_one: '2018-10-01T00:00:00.000',
+        location: '1600 Grand Ave'
+      }];
+      const result = app.transformData(data)[0];
+      expect(result['location']).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>');
+    });
   });
 
   describe('html', () => {
     it('no data shows message', () => {
       const result = app.html([]);
 
-      expect(result).to.equal('\n<!DOCTYPE html>\n<html lang=\'en\'>\n<head>\n  <style>\n* {\n  border-collapse: collapse;\n  padding: 5px;\n  font-family: helvetica;\n}\n\nth {\n  text-transform: uppercase;\n  border: 2px solid black;\n  background-color: lightblue;\n}\n\ntd {\n  border: 1px solid black;\n  max-width: 20em;\n}\n\n.error {\n  text-align: center;\n  color: red;\n  font-size: 3em;\n}\n  </style>\n  <title>Nephridium-powered page</title>\n  <link rel="shortcut icon" href="#" />\n</head>\n<body>\n  <div>\n    <button type="button" onclick="exportTableToCSV(\'data.csv\')">Download</button>\n    <button type="button" onclick="location.href=\'undefined\'">Raw JSON from Socrata</button>\n  </div>\n  <div><div class="error"><p>No records found</p><p>Please expand your search</p></div></div>\n\n  \n  <script type="text/javascript">\n    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/\n    function exportTableToCSV(filename) {\n      let csv = [];\n      const rows = document.querySelectorAll("table tr");\n\n      for (var i = 0; i < rows.length; i++) {\n        var row = [], cols = rows[i].querySelectorAll("td, th");\n\n        for (var j = 0; j < cols.length; j++) {\n          row.push(cols[j].innerText);\n        }\n\n        csv.push(row.join(","));\n      }\n\n      downloadCSV(csv.join(\'\\n\'), filename);\n    }\n\n    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/\n    function downloadCSV(csv, filename) {\n      const csvFile = new Blob([csv], {type: "text/csv"});\n      const downloadLink = document.createElement("a");\n      downloadLink.download = filename;\n      downloadLink.href = window.URL.createObjectURL(csvFile);\n      downloadLink.style.display = "none";\n      document.body.appendChild(downloadLink);\n\n      downloadLink.click();\n    }\n  </script>\n</body>\n</html>');
+      expect(result).to.equal('\n<!DOCTYPE html>\n<html lang=\'en\'>\n<head>\n  <style>\n* {\n  border-collapse: collapse;\n  padding: 5px;\n  font-family: helvetica;\n}\n\nth {\n  text-transform: uppercase;\n  border: 2px solid black;\n  background-color: lightblue;\n}\n\ntd {\n  border: 1px solid black;\n  max-width: 20em;\n}\n\n.error {\n  text-align: center;\n  color: red;\n  font-size: 3em;\n}\n\n#download {\n  margin-right: 10em;\n}\n  </style>\n  <title>Nephridium-powered page</title>\n  <link rel="shortcut icon" href="#" />\n</head>\n<body>\n  <div>\n    <button id="download" type="button" onclick="exportTableToCSV(\'data.csv\')">Download Data for Excel</button>\n  </div>\n  <div><div class="error"><p>No records found</p><p>Please expand your search</p></div></div>\n  <div>\n    <button type="button" onclick="location.href=\'undefined\'">Raw JSON from Socrata</button>\n  </div>\n\n  \n  <script type="text/javascript">\n    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/\n    function exportTableToCSV(filename) {\n      let csv = [];\n      const rows = document.querySelectorAll("table tr");\n\n      for (var i = 0; i < rows.length; i++) {\n        var row = [], cols = rows[i].querySelectorAll("td, th");\n\n        for (var j = 0; j < cols.length; j++) {\n          row.push(cols[j].innerText);\n        }\n\n        csv.push(row.join(","));\n      }\n\n      downloadCSV(csv.join(\'\\n\'), filename);\n    }\n\n    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/\n    function downloadCSV(csv, filename) {\n      const csvFile = new Blob([csv], {type: "text/csv"});\n      const downloadLink = document.createElement("a");\n      downloadLink.download = filename;\n      downloadLink.href = window.URL.createObjectURL(csvFile);\n      downloadLink.style.display = "none";\n      document.body.appendChild(downloadLink);\n\n      downloadLink.click();\n    }\n  </script>\n</body>\n</html>');
     });
   });
 });
