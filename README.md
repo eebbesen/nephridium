@@ -94,6 +94,8 @@ You can modify *nephridium* to return JSON instead of HTML, internallly filter y
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html
 ```bash
 sam local start-api --region us-east-1
+
+http://127.0.0.1:3000/?time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs
 ```
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function. Note that CloudFront (but not your local api) returns a 403 when it receives a GET with a body, so you must use query parameters instead.

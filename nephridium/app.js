@@ -56,7 +56,7 @@ exports.lambdaHandler = async (event, context) => {
       const ret = await axios(url);
       const retData = this.removeAttributes(ret.data, params.to_remove);
       const modData = this.transformData(retData);
-      const web = this.html(modData);
+      const web = this.html(modData, url);
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
@@ -121,7 +121,9 @@ exports.normalizeDate = function (date) {
   return date.substring(0, 10);
 };
 
-exports.html = function (data) {
+exports.html = function (data, socrataUrl) {
+  // link addresses to google maps here
+
   let display = tableify(data);
   if (data.length < 1) {
     display = '<div class="error"><p>No records found</p><p>Please expand your search</p></div>'
@@ -137,41 +139,14 @@ exports.html = function (data) {
 </head>
 <body>
   <div>
-    <button type="button" onclick="exportTableToCSV('data.csv')">Export Data</button>
+    <button id="download" type="button" onclick="exportTableToCSV('data.csv')">Download Data for Excel</button>
   </div>
   <div>${display}</div>
+  <div>
+    <button type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
+  </div>
 
-  <script type="text/javascript">
-    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-    function exportTableToCSV(filename) {
-      let csv = [];
-      const rows = document.querySelectorAll("table tr");
-
-      for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll("td, th");
-
-        for (var j = 0; j < cols.length; j++) {
-          row.push(cols[j].innerText);
-        }
-
-        csv.push(row.join(","));
-      }
-
-      downloadCSV(csv.join('\\n'), filename);
-    }
-
-    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-    function downloadCSV(csv, filename) {
-      const csvFile = new Blob([csv], {type: "text/csv"});
-      const downloadLink = document.createElement("a");
-      downloadLink.download = filename;
-      downloadLink.href = window.URL.createObjectURL(csvFile);
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
-
-      downloadLink.click();
-    }
-  </script>
+  ${this.javascript()}
 </body>
 </html>`;
 };
@@ -201,11 +176,16 @@ exports.transformData = function (data) {
         if (row[k].match(/\dT\d/) && row[k].endsWith('.000')) {
           row[k] = row[k].replace('.000', '').replace('T', ' ');
         }
-      }
-      if (typeof k === 'string' && k.includes('_')) {
-        const kNew = k.replace(/_/g, ' ');
-        row[kNew] = row[k];
-        delete row[k];
+
+        if (k.includes('_')) {
+          const kNew = k.replace(/_/g, ' ');
+          row[kNew] = row[k];
+          delete row[k];
+        }
+
+        if (k == ('location')) {
+          row[k] = this.mapIt(row[k]);
+        }
       }
     });
   });
@@ -237,5 +217,52 @@ td {
   color: red;
   font-size: 3em;
 }
-  `;
+
+#download {
+  margin-right: 10em;
+}
+  `
 };
+
+exports.javascript = function () {
+  return `
+  <script type="text/javascript">
+    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
+    function exportTableToCSV(filename) {
+      let csv = [];
+      const rows = document.querySelectorAll("table tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+
+        for (var j = 0; j < cols.length; j++) {
+          row.push(cols[j].innerText);
+        }
+
+        csv.push(row.join(","));
+      }
+
+      downloadCSV(csv.join('\\n'), filename);
+    }
+
+    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
+    function downloadCSV(csv, filename) {
+      const csvFile = new Blob([csv], {type: "text/csv"});
+      const downloadLink = document.createElement("a");
+      downloadLink.download = filename;
+      downloadLink.href = window.URL.createObjectURL(csvFile);
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+
+      downloadLink.click();
+    }
+  </script>`
+};
+
+// expects lat/long only
+exports.mapIt = function(address) {
+  const URL = 'https://www.google.com/maps/place/';
+  const POST = '%20Saint+Paul,+MN';
+  return `<a href="${URL + encodeURIComponent(address) + POST}">${address}</a>`;
+};
+
