@@ -138,8 +138,11 @@ exports.html = function (data, socrataUrl) {
   <link rel="shortcut icon" href="#" />
 </head>
 <body>
+  <div id="description">
+    <a href="${socrataUrl}">City of Saint Paul Resident Service Requests</a>
+  </div>
   <div>
-    <button id="download" type="button" onclick="exportTableToCSV('data.csv')">Download Data for Excel</button>
+    <button id="download" type="button" onclick="exportTableToCSV('data.csv')">Download this data for Excel</button>
   </div>
   <div>${display}</div>
   <div>
@@ -220,6 +223,11 @@ td {
 
 #download {
   margin-right: 10em;
+}
+
+#description {
+  text-align: center;
+  font-size: 2em;
 }
   `
 };
