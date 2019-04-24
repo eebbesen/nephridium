@@ -139,7 +139,9 @@ exports.html = function (data, socrataUrl) {
 </head>
 <body>
   <div id="description">
-    <a href="${socrataUrl}">City of Saint Paul Resident Service Requests</a>
+    <h1>
+      <a href="${socrataUrl}">City of Saint Paul Resident Service Requests</a>
+    </h1>
   </div>
   <div>
     <button id="download" type="button" onclick="exportTableToCSV('data.csv')">Download this data for Excel</button>
@@ -227,7 +229,11 @@ td {
 
 #description {
   text-align: center;
-  font-size: 2em;
+  padding: 0;
+}
+
+h1 {
+  margin: 0;
 }
   `
 };
