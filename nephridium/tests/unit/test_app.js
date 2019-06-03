@@ -6,7 +6,7 @@ const { expect } = chai;
 describe('mapIt', () => {
   const result = app.mapIt('1600 Grand Ave');
 
-  expect(result).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>')
+  expect(result).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>');
 });
 
 describe('Tests index', () => {
