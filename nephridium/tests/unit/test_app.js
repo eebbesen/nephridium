@@ -23,10 +23,10 @@ describe('Tests index', () => {
       expect(result).to.equal('2018-09-28');
     });
 
-    it('buildDate does date arithmetic for 30 days', () => {
+    it('buildDate does date arithmetic for 60 days', () => {
       const result = app.buildDate('2018-10-05T05:16:11.345Z', null);
 
-      expect(result).to.equal('2018-09-05');
+      expect(result).to.equal('2018-08-06');
     });
   });
 
