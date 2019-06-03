@@ -6,7 +6,7 @@ const { expect } = chai;
 describe('mapIt', () => {
   const result = app.mapIt('1600 Grand Ave');
 
-  expect(result).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>')
+  expect(result).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>');
 });
 
 describe('Tests index', () => {
@@ -23,10 +23,10 @@ describe('Tests index', () => {
       expect(result).to.equal('2018-09-28');
     });
 
-    it('buildDate does date arithmetic for 30 days', () => {
+    it('buildDate does date arithmetic for 60 days', () => {
       const result = app.buildDate('2018-10-05T05:16:11.345Z', null);
 
-      expect(result).to.equal('2018-09-05');
+      expect(result).to.equal('2018-08-06');
     });
   });
 

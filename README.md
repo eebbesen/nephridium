@@ -28,7 +28,7 @@ Once an URL is created it can be used with [IFTTT](https://ifttt.com), [Zapier](
 You will need
 * *NEPHRIDIUM_URL:* A deployed version of *nephridium* (see the section `Host your own instance of nephridium` below)
 * *DATASET_URL:* A [Socrata](https://socrata.com/company-info/) dataset. See https://www.opendatanetwork.com/search?q=service+requests if you need one to try out. You can also search for you city/state/county, like https://www.opendatanetwork.com/search?q=kalamazoo. Note that the dataset URL is specific -- https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5 is an example. The page should have the text `About this dataset` on it and maybe some example URLs.
-* *TIME_COLUMN:* A `floating_timestamp` value for your dataset. This is the value that's used to get the last week or month of entries. If you scroll down on the dataset page to the `Fields` section there should be at least one `floating_timestamp`. On https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5 `deadline_date` is the value.
+* *TIME_COLUMN:* A `floating_timestamp` value for your dataset. This is the value that's used to get the last week or two months of entries. If you scroll down on the dataset page to the `Fields` section there should be at least one `floating_timestamp`. On https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5 `deadline_date` is the value. Default is two months -- add `timeRange=w` to your URL to limit records to the previous week.
 
 Whew! Now that you have the ingredients it's time to craft the URL you'll be using.
 
@@ -70,7 +70,7 @@ See the Socrata API documentation for more options, especially
 
 * AWS CLI already configured with at least PowerUser permission
 * [NodeJS 8.10+ installed](https://nodejs.org/en/download/)
-* [Docker installed](https://www.docker.com/community-edition)
+* [Docker](https://www.docker.com/community-edition) installed and running
 
 ### Setup process
 
@@ -265,3 +265,6 @@ curl -vvv -X GET 'http://127.0.0.1:3000/?district_council=8&time_column=request_
 
 curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?district_council=8&time_column=request_date&to_remove=count,map_location&url=https://information.stpaul.gov/resource/qtkm-psvs'
 ```
+
+## Accessibility testing
+http://wave.webaim.org/report#/https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?district_council=8&time_column=request_date&to_remove=count,map_location,see_click_fix_website_submission&url=https://information.stpaul.gov/resource/qtkm-psvs

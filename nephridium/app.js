@@ -1,7 +1,7 @@
 const axios = require('axios');
 const tableify = require('tableify');
 
-const dayMs = 86400000;
+// const dayMs = 86400000;
 const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
 
@@ -39,7 +39,7 @@ const thirtyDayMs = 2592000000;
  * @returns {Object} object.body - JSON Payload to be returned
  *
  */
-exports.lambdaHandler = async (event, context) => {
+exports.lambdaHandler = async (event, _context) => {
   let response;
   try {
     const params = event.queryStringParameters;
@@ -111,7 +111,7 @@ exports.buildCustomParams = function (params) {
 
 exports.buildDate = function (date, range) {
   const initDate = new Date(`${this.normalizeDate(date)}T00:00:00.000`);
-  const modifier = range === 'w' ? weekMs : thirtyDayMs;
+  const modifier = range === 'w' ? weekMs : (2 * thirtyDayMs);
   const endDate = new Date(initDate - modifier);
 
   return this.normalizeDate(endDate.toISOString());
@@ -126,7 +126,7 @@ exports.html = function (data, socrataUrl) {
 
   let display = tableify(data);
   if (data.length < 1) {
-    display = '<div class="error"><p>No records found</p><p>Please expand your search</p></div>'
+    display = '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
   }
 
   return `
@@ -235,7 +235,7 @@ td {
 h1 {
   margin: 0;
 }
-  `
+  `;
 };
 
 exports.javascript = function () {
@@ -270,7 +270,7 @@ exports.javascript = function () {
 
       downloadLink.click();
     }
-  </script>`
+  </script>`;
 };
 
 // expects lat/long only
@@ -279,4 +279,3 @@ exports.mapIt = function(address) {
   const POST = '%20Saint+Paul,+MN';
   return `<a href="${URL + encodeURIComponent(address) + POST}">${address}</a>`;
 };
-
