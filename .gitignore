@@ -129,5 +129,6 @@ $RECYCLE.BIN/
 packaged.yaml
 
 local_snippets.txt
+notes.md
 
 # End of https://www.gitignore.io/api/osx,node,linux,windows
