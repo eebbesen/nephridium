@@ -4,6 +4,7 @@ const tableify = require('tableify');
 // const dayMs = 86400000;
 const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
+const releaseVersion = require('./package.json').version;
 
 /**
  *
@@ -144,12 +145,11 @@ exports.html = function (data, socrataUrl) {
     </h1>
   </div>
   <div>
-    <button id="download" type="button" onclick="exportTableToCSV('data.csv')">Download this data for Excel</button>
+    <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
+    <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
   </div>
   <div>${display}</div>
-  <div>
-    <button type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
-  </div>
+  <div id="version">nephridium version: ${releaseVersion}</div>
 
   ${this.javascript()}
 </body>
@@ -234,6 +234,16 @@ td {
 
 h1 {
   margin: 0;
+}
+
+button:hover {
+  color: green;
+  cursor: pointer;
+}
+
+#version {
+  text-align: center;
+  font-size: 1em;
 }
   `;
 };
