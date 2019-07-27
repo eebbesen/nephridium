@@ -116,7 +116,7 @@ describe('Tests index', () => {
       };
 
       const response = await app.lambdaHandler(event, null);
-      expect(response['errno']).to.equal('ENOTFOUND');
+      expect(response.errno).to.equal('ENOTFOUND');
     });
 
     it('retrns a descriptive error message when no time_column', async () => {
@@ -186,7 +186,7 @@ describe('Tests index', () => {
         a: '2018-10-01T00:00:01.000',
         b: 2,
         c_you_later: '3',
-        d: '7T989'
+        d: '7T989',
       }];
 
       const result = app.transformData(data)[0];
@@ -201,10 +201,10 @@ describe('Tests index', () => {
     it('decorates locations', () => {
       const data = [{
         name_one: '2018-10-01T00:00:00.000',
-        location: '1600 Grand Ave'
+        location: '1600 Grand Ave',
       }];
       const result = app.transformData(data)[0];
-      expect(result['location']).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>');
+      expect(result.location).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>');
     });
   });
 

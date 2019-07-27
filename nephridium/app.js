@@ -290,7 +290,7 @@ exports.javascript = function () {
 };
 
 // expects lat/long only
-exports.mapIt = function(address) {
+exports.mapIt = function (address) {
   const URL = 'https://www.google.com/maps/place/';
   const POST = '%20Saint+Paul,+MN';
   return `<a href="${URL + encodeURIComponent(address) + POST}">${address}</a>`;
