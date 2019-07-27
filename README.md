@@ -85,7 +85,7 @@ cd ../
 ```
 
 #### Local development
-*SAM CLI* is used to emulate both Lambda and API Gateway locally and uses our `template.yaml`. You will want to have to install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed and configure using `aws configure` to avoid MissingAuthenticationToken issues.
+*SAM CLI* is used to emulate both Lambda and API Gateway locally and uses our `template.yaml`. You will have to install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed and configure using `aws configure` to avoid MissingAuthenticationToken issues.
 
 You can modify *nephridium* to return JSON instead of HTML, internallly filter your dataset(s) to minimize the number of parameters in your users' URLs, format the output (e.g., custom CSS), or restrict who can access the API.
 
@@ -201,6 +201,17 @@ We use `mocha` for testing our code and it is already added in `package.json` un
 cd nephridium
 npm run test
 ```
+
+### Linting
+```bash
+npm run lint
+```
+
+To have linter fix what it can
+```bash
+npm run lint -- --fix
+```
+
 
 # Appendix
 
