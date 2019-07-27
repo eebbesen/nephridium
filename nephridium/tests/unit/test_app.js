@@ -10,6 +10,85 @@ describe('mapIt', () => {
 });
 
 describe('Tests index', () => {
+  describe('removeAttributes', () => {
+    it ('removes stuff', () => {
+      const data = [
+        { service_number: '4753267',
+          request_date: '2019-07-22T00:00:00.000',
+          location: '633 CAPITOL BLVD',
+          ward: '1',
+          district_council: '7',
+          status: 'Open',
+          request_type: 'Complaint',
+          request_description: 'Shut Off',
+          see_click_fix_website_submission: 'No',
+          map_location: { type: 'Point', coordinates: [Array] },
+          count: '1',
+          map_location_address: '',
+          map_location_city: '',
+          map_location_state: '',
+          map_location_zip: '' },
+        { service_number: '4753210',
+          request_date: '2019-07-22T00:00:00.000',
+          location: '1921 ST ANTHONY AVE',
+          ward: '4',
+          district_council: '13',
+          status: 'Under Review',
+          request_type: 'Complaint',
+          request_description: 'Certificate of Occupancy',
+          see_click_fix_website_submission: 'No',
+          map_location: { type: 'Point', coordinates: [Array] },
+          count: '1',
+          map_location_address: '',
+          map_location_city: '',
+          map_location_state: '',
+          map_location_zip: ''
+        }
+      ];
+
+      const result = app.removeAttributes(data, 'count,map_location');
+
+      expect(result.length).to.equal(2);
+      expect(result[0].ward).to.equal('1');
+      expect(typeof result[0].count).to.equal('undefined');
+      expect(typeof data[0].count).to.equal('string');
+    });
+
+    it ('handles no removal', () => {
+      const data = [
+        { service_number: '4753267',
+          request_date: '2019-07-22T00:00:00.000',
+          location: '633 CAPITOL BLVD',
+          ward: '1',
+          district_council: '7',
+          status: 'Open',
+          request_type: 'Complaint',
+          request_description: 'Shut Off',
+          see_click_fix_website_submission: 'No',
+          map_location: { type: 'Point', coordinates: [Array] },
+          count: '1',
+          map_location_address: '',
+          map_location_city: '',
+          map_location_state: '',
+          map_location_zip: '' }
+      ];
+
+      const result = app.removeAttributes(data, null);
+
+      expect(result.length).to.equal(1);
+      expect(data.length).to.equal(1);
+      expect(data).not.to.equal(result);
+    });
+
+    it ('handles no data', () => {
+      const data = [];
+
+      const result = app.removeAttributes(data, 'count,map_location');
+
+      expect(result.length).to.equal(0);
+    })
+  });
+
   describe('date functions', () => {
     it('normalizeDate strips from date', () => {
       const result = app.normalizeDate('2018-10-05T05:16:11.345Z');
@@ -212,7 +291,7 @@ describe('Tests index', () => {
     it('no data shows message', () => {
       const result = app.html([]);
 
-      expect(result).to.equal(`\n<!DOCTYPE html>\n<html lang=\'en\'>\n<head>\n  <style>\n* {\n  border-collapse: collapse;\n  padding: 5px;\n  font-family: helvetica;\n}\n\nth {\n  text-transform: uppercase;\n  border: 2px solid black;\n  background-color: lightblue;\n}\n\ntd {\n  border: 1px solid black;\n  max-width: 20em;\n}\n\n.error {\n  text-align: center;\n  color: red;\n  font-size: 3em;\n}\n\n#download {\n  margin-right: 10em;\n}\n\n#description {\n  text-align: center;\n  padding: 0;\n}\n\nh1 {\n  margin: 0;\n}\n\nbutton {\n  border: 2px solid blue;\n  border-radius: 4px;\n}\n\nbutton:hover {\n  color: white;\n  cursor: pointer;\n  background-color: blue;\n}\n\n#version {\n  text-align: center;\n  font-size: 1em;\n}\n  </style>\n  <title>Nephridium-powered page</title>\n  <link rel="shortcut icon" href="#" />\n</head>\n<body>\n  <div id="description">\n    <h1>\n      <a href="undefined">City of Saint Paul Resident Service Requests</a>\n    </h1>\n  </div>\n  <div>\n    <button id="downloadCSV" type="button" onclick="exportTableToCSV(\'data.csv\')">Download this data for a spreadsheet</button>\n    <button id="downloadJSON" type="button" onclick="location.href=\'undefined\'">Raw JSON from Socrata</button>\n  </div>\n  <div><div class="error"><p>No records found</p><p>Please expand your search</p></div></div>\n  <div id="version">nephridium version: ${require('../../package.json').version}</div>\n\n  \n  <script type="text/javascript">\n    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/\n    function exportTableToCSV(filename) {\n      let csv = [];\n      const rows = document.querySelectorAll("table tr");\n\n      for (var i = 0; i < rows.length; i++) {\n        var row = [], cols = rows[i].querySelectorAll("td, th");\n\n        for (var j = 0; j < cols.length; j++) {\n          row.push(cols[j].innerText);\n        }\n\n        csv.push(row.join(","));\n      }\n\n      downloadCSV(csv.join(\'\\n\'), filename);\n    }\n\n    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/\n    function downloadCSV(csv, filename) {\n      const csvFile = new Blob([csv], {type: "text/csv"});\n      const downloadLink = document.createElement("a");\n      downloadLink.download = filename;\n      downloadLink.href = window.URL.createObjectURL(csvFile);\n      downloadLink.style.display = "none";\n      document.body.appendChild(downloadLink);\n\n      downloadLink.click();\n    }\n  </script>\n</body>\n</html>`);
+      expect(result).to.equal(`\n<!DOCTYPE html>\n<html lang=\'en\'>\n<head>\n  <style>\n* {\n  border-collapse: collapse;\n  padding: 5px;\n  font-family: helvetica;\n}\n\nth {\n  text-transform: uppercase;\n  border: 2px solid black;\n  background-color: lightblue;\n}\n\ntd {\n  border: 1px solid black;\n  max-width: 20em;\n}\n\n.error {\n  text-align: center;\n  color: red;\n  font-size: 3em;\n}\n\n#download {\n  margin-right: 10em;\n}\n\n#description {\n  text-align: center;\n  padding: 0;\n}\n\nh1 {\n  margin: 0;\n}\n\nbutton {\n  border: 2px solid blue;\n  border-radius: 4px;\n}\n\nbutton:hover {\n  color: white;\n  cursor: pointer;\n  background-color: blue;\n}\n\n#version {\n  text-align: center;\n  font-size: 1em;\n}</style>\n  <title>Nephridium-powered page</title>\n  <link rel="shortcut icon" href="#" />\n</head>\n<body>\n  <div id="description">\n    <h1>\n      <a href="undefined">City of Saint Paul Resident Service Requests</a>\n    </h1>\n  </div>\n  <div>\n    <button id="downloadCSV" type="button" onclick="exportTableToCSV(\'data.csv\')">Download this data for a spreadsheet</button>\n    <button id="downloadJSON" type="button" onclick="location.href=\'undefined\'">Raw JSON from Socrata</button>\n  </div>\n  <div><div class="error"><p>No records found</p><p>Please expand your search</p></div></div>\n  <div id="version">nephridium version: 1.8.0</div>\n  \n  <script type="text/javascript">\n    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/\n    function exportTableToCSV(filename) {\n      let csv = [];\n      const rows = document.querySelectorAll("table tr");\n\n      for (var i = 0; i < rows.length; i++) {\n        var row = [], cols = rows[i].querySelectorAll("td, th");\n\n        for (var j = 0; j < cols.length; j++) {\n          row.push(cols[j].innerText);\n        }\n\n        csv.push(row.join(","));\n      }\n\n      downloadCSV(csv.join(\'\\n\'), filename);\n    }\n\n    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/\n    function downloadCSV(csv, filename) {\n      const csvFile = new Blob([csv], {type: "text/csv"});\n      const downloadLink = document.createElement("a");\n      downloadLink.download = filename;\n      downloadLink.href = window.URL.createObjectURL(csvFile);\n      downloadLink.style.display = "none";\n      document.body.appendChild(downloadLink);\n\n      downloadLink.click();\n    }\n  </script>\n</body>\n</html>`);
     });
   });
 });
