@@ -1,9 +1,6 @@
 version: 2
 jobs:
   build:
-    branches:
-      ignore:
-        - xx
     working_directory: ~/project
     docker:
       - image: circleci/node:8-stretch-browsers-legacy
