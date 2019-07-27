@@ -236,9 +236,15 @@ h1 {
   margin: 0;
 }
 
+button {
+  border: 2px solid blue;
+  border-radius: 4px;
+}
+
 button:hover {
-  color: green;
+  color: white;
   cursor: pointer;
+  background-color: blue;
 }
 
 #version {
