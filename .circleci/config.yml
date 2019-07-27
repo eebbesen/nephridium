@@ -15,5 +15,4 @@ jobs:
       - run:
           name: run_tests
           command: cd nephridium; npm run test
-      - store_artifacts:
-          path: .nyc_output
+

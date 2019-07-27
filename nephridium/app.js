@@ -122,15 +122,16 @@ exports.normalizeDate = function (date) {
   return date.substring(0, 10);
 };
 
-exports.html = function (data, socrataUrl) {
-  // link addresses to google maps here
-
-  let display = tableify(data);
+exports.buildTableData = function(data) {
   if (data.length < 1) {
-    display = '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
+    return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
   }
 
-  return `
+  return tableify(data);
+}
+
+exports.html = function (data, socrataUrl) {
+  return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -148,26 +149,26 @@ exports.html = function (data, socrataUrl) {
     <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
     <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
   </div>
-  <div>${display}</div>
+  <div>${this.buildTableData(data)}</div>
   <div id="version">nephridium version: ${releaseVersion}</div>
-
   ${this.javascript()}
 </body>
-</html>`;
+</html>`);
 };
 
-// probably should not mutate?
 exports.removeAttributes = function (data, toRemove) {
+  // don't mutate input
+  const d = JSON.parse(JSON.stringify(data));
   if (toRemove) {
     const tr = toRemove.split(',');
-    data.forEach((row) => {
+    d.forEach((row) => {
       tr.forEach((rm) => {
         delete row[rm];
       });
     });
   }
 
-  return data;
+  return d;
 };
 
 // strip time from dates that don't have non-zero time
@@ -199,7 +200,7 @@ exports.transformData = function (data) {
 };
 
 exports.css = function () {
-  return `
+  return Object.freeze(`
 * {
   border-collapse: collapse;
   padding: 5px;
@@ -250,12 +251,11 @@ button:hover {
 #version {
   text-align: center;
   font-size: 1em;
-}
-  `;
+}`)
 };
 
 exports.javascript = function () {
-  return `
+  return Object.freeze(`
   <script type="text/javascript">
     // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
     function exportTableToCSV(filename) {
@@ -286,7 +286,7 @@ exports.javascript = function () {
 
       downloadLink.click();
     }
-  </script>`;
+  </script>`);
 };
 
 // expects lat/long only
