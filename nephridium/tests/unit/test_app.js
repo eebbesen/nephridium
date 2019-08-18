@@ -4,7 +4,7 @@ const app = require('../../app.js');
 const { expect } = chai;
 
 describe('getFilterParams', () => {
-  it.only ('returns params used to filter', () => {
+  it ('returns params used to filter', () => {
     const params = {
       district_council: 8,
       request_description: 'Graffiti',
