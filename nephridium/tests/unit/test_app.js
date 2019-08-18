@@ -3,6 +3,24 @@ const app = require('../../app.js');
 
 const { expect } = chai;
 
+describe('getFilterParams', () => {
+  it.only ('returns params used to filter', () => {
+    const params = {
+      district_council: 8,
+      request_description: 'Graffiti',
+      time_column: 'request_date',
+      to_remove: 'count,map_location_address,map_location_city,map_location_state,ward,map_location_zip,map_location,district_council,see_click_fix_website_submission',
+      url: 'https://information.stpaul.gov/resource/qtkm-psvs'
+    }
+
+    const result = app.getFilterParams(params);
+
+    expect(Object.keys(result).length).to.equal(2);
+    expect(result['district_council']).to.equal(8);
+    expect(result['request_description']).to.equal('Graffiti');
+  });
+});
+
 describe('mapIt', () => {
   const result = app.mapIt('1600 Grand Ave');
 

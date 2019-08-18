@@ -57,7 +57,8 @@ exports.lambdaHandler = async (event, _context) => {
       const ret = await axios(url);
       const retData = this.removeAttributes(ret.data, params.to_remove);
       const modData = this.transformData(retData);
-      const web = this.html(modData, url);
+      const filterParams = this.getFilterParams(params);
+      const web = this.html(modData, url, filterParams);
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
@@ -130,7 +131,18 @@ exports.buildTableData = function(data) {
   return tableify(data);
 }
 
-exports.html = function (data, socrataUrl) {
+exports.html = function (data, socrataUrl, params) {
+  let filter = '';
+  if (params) {
+    filter = `
+<div id="filters">
+  <ul>
+    ${Object.keys(params).map(k => `<li>${k.toUpperCase().replace('_', ' ')}: ${(params[k]).toString().toLowerCase()}</li>`)}
+  </ul>
+</div>
+`;
+  }
+
   return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
@@ -144,6 +156,7 @@ exports.html = function (data, socrataUrl) {
     <h1>
       <a href="${socrataUrl}">City of Saint Paul Resident Service Requests</a>
     </h1>
+    ${filter}
   </div>
   <div>
     <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
@@ -154,6 +167,17 @@ exports.html = function (data, socrataUrl) {
   ${this.javascript()}
 </body>
 </html>`);
+};
+
+// return object with only query filter params
+exports.getFilterParams = function (params) {
+  const p = Object.assign({}, params);
+
+  delete p.to_remove;
+  delete p.time_column;
+  delete p.url;
+
+  return p;
 };
 
 exports.removeAttributes = function (data, toRemove) {
@@ -251,7 +275,13 @@ button:hover {
 #version {
   text-align: center;
   font-size: 1em;
-}`)
+}
+
+#filters * {
+  list-style-type: none;
+  margin: 0;
+}
+`)
 };
 
 exports.javascript = function () {
