@@ -5,6 +5,7 @@ const tableify = require('tableify');
 const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
 const releaseVersion = require('./package.json').version;
+const paramsToRemove = ['time_column','url','time_range','to_remove'];
 
 /**
  *
@@ -57,7 +58,8 @@ exports.lambdaHandler = async (event, _context) => {
       const ret = await axios(url);
       const retData = this.removeAttributes(ret.data, params.to_remove);
       const modData = this.transformData(retData);
-      const web = this.html(modData, url);
+      const filterParams = this.getFilterParams(params);
+      const web = this.html(modData, url, filterParams);
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
@@ -102,10 +104,11 @@ exports.buildUrl = function (params) {
 
 // removes some params for all calls, plus any keys in the to_remove parameter
 exports.buildCustomParams = function (params) {
+  const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',');
+  const rem = customNo.filter(key => {!params[key]});
+
   const data = Object.assign({}, params);
-  const customNo = (params.to_remove ? `,${params.to_remove}` : '');
-  const no = (`time_column,url,time_range,to_remove${customNo}`).split(',');
-  no.forEach((key) => { delete data[key]; });
+  paramsToRemove.concat(rem).forEach(k => { delete data[k] });
 
   return data;
 };
@@ -130,7 +133,22 @@ exports.buildTableData = function(data) {
   return tableify(data);
 }
 
-exports.html = function (data, socrataUrl) {
+exports.html = function (data, socrataUrl, params) {
+  let filter = '';
+  if (params) {
+    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}`);
+    let fss = '';
+    fs.forEach(f => fss += f);
+    filter = `
+<div id="filters" style="display:none">
+  <h2>Filters</h2>
+  <ul>
+    ${fss}
+  </ul>
+</div>
+`;
+  }
+
   return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
@@ -148,12 +166,25 @@ exports.html = function (data, socrataUrl) {
   <div>
     <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
     <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
+    <button id="toggleFilters" type="button" onclick="toggleFilterDisplay()">Show Filters</button>
   </div>
+  ${filter}
   <div>${this.buildTableData(data)}</div>
   <div id="version">nephridium version: ${releaseVersion}</div>
   ${this.javascript()}
 </body>
 </html>`);
+};
+
+// return object with only query filter params
+exports.getFilterParams = function (params) {
+  const p = Object.assign({}, params);
+
+  delete p.to_remove;
+  delete p.time_column;
+  delete p.url;
+
+  return p;
 };
 
 exports.removeAttributes = function (data, toRemove) {
@@ -251,7 +282,13 @@ button:hover {
 #version {
   text-align: center;
   font-size: 1em;
-}`)
+}
+
+#filters * {
+  list-style-type: none;
+  margin: 0;
+}
+`)
 };
 
 exports.javascript = function () {
@@ -285,6 +322,17 @@ exports.javascript = function () {
       document.body.appendChild(downloadLink);
 
       downloadLink.click();
+    }
+
+    function toggleFilterDisplay() {
+      const style = document.getElementById('filters').style.display;
+      if (style && style == 'block') {
+        document.getElementById('filters').style.display = 'none';
+        const b = document.getElementById('toggleFilters').innerText = 'Show Filters';
+      } else {
+        document.getElementById('filters').style.display = 'block';
+        const b = document.getElementById('toggleFilters').innerText = 'Hide Filters';
+      }
     }
   </script>`);
 };
