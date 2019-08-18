@@ -5,6 +5,7 @@ const tableify = require('tableify');
 const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
 const releaseVersion = require('./package.json').version;
+const paramsToRemove = ['time_column','url','time_range','to_remove'];
 
 /**
  *
@@ -103,10 +104,11 @@ exports.buildUrl = function (params) {
 
 // removes some params for all calls, plus any keys in the to_remove parameter
 exports.buildCustomParams = function (params) {
+  const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',');
+  const rem = customNo.filter(key => {!params[key]});
+
   const data = Object.assign({}, params);
-  const customNo = (params.to_remove ? `,${params.to_remove}` : '');
-  const no = (`time_column,url,time_range,to_remove${customNo}`).split(',');
-  no.forEach((key) => { delete data[key]; });
+  paramsToRemove.concat(rem).forEach(k => { delete data[k] });
 
   return data;
 };
@@ -134,10 +136,13 @@ exports.buildTableData = function(data) {
 exports.html = function (data, socrataUrl, params) {
   let filter = '';
   if (params) {
+    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}`);
+    let fss = '';
+    fs.forEach(f => fss += f);
     filter = `
 <div id="filters">
   <ul>
-    ${Object.keys(params).map(k => `<li>${k.toUpperCase().replace('_', ' ')}: ${(params[k]).toString().toLowerCase()}</li>`)}
+    ${fss}
   </ul>
 </div>
 `;
