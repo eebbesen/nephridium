@@ -140,7 +140,8 @@ exports.html = function (data, socrataUrl, params) {
     let fss = '';
     fs.forEach(f => fss += f);
     filter = `
-<div id="filters">
+<div id="filters" style="display:none">
+  <h2>Filters</h2>
   <ul>
     ${fss}
   </ul>
@@ -161,12 +162,13 @@ exports.html = function (data, socrataUrl, params) {
     <h1>
       <a href="${socrataUrl}">City of Saint Paul Resident Service Requests</a>
     </h1>
-    ${filter}
   </div>
   <div>
     <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
     <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
+    <button id="toggleFilters" type="button" onclick="toggleFilterDisplay()">Show Filters</button>
   </div>
+  ${filter}
   <div>${this.buildTableData(data)}</div>
   <div id="version">nephridium version: ${releaseVersion}</div>
   ${this.javascript()}
@@ -320,6 +322,17 @@ exports.javascript = function () {
       document.body.appendChild(downloadLink);
 
       downloadLink.click();
+    }
+
+    function toggleFilterDisplay() {
+      const style = document.getElementById('filters').style.display;
+      if (style && style == 'block') {
+        document.getElementById('filters').style.display = 'none';
+        const b = document.getElementById('toggleFilters').innerText = 'Show Filters';
+      } else {
+        document.getElementById('filters').style.display = 'block';
+        const b = document.getElementById('toggleFilters').innerText = 'Hide Filters';
+      }
     }
   </script>`);
 };
