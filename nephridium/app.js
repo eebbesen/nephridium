@@ -136,7 +136,7 @@ exports.buildTableData = function(data) {
   return tableify(data);
 }
 
-exports.html = function (data, socrataUrl, params) {
+exports.buildFiltersDisplay = function(params) {
   let filter = '';
   if (params) {
     const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}`);
@@ -152,6 +152,10 @@ exports.html = function (data, socrataUrl, params) {
 `;
   }
 
+  return filter;
+}
+
+exports.html = function (data, socrataUrl, params) {
   return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
@@ -172,7 +176,7 @@ exports.html = function (data, socrataUrl, params) {
     <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
     <button id="toggleFilters" type="button" onclick="toggleFilterDisplay()">Show Filters</button>
   </div>
-  ${filter}
+  ${this.buildFiltersDisplay(params)}
   <div>${this.buildTableData(data)}</div>
   <div id="version">nephridium version: ${releaseVersion}</div>
   ${this.javascript()}
