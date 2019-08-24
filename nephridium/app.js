@@ -1,6 +1,9 @@
 const axios = require('axios');
 const tableify = require('tableify');
 
+const fs = require('fs')
+const path = require('path')
+
 // const dayMs = 86400000;
 const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
@@ -156,6 +159,7 @@ exports.html = function (data, socrataUrl, params) {
   <style>${this.css()}</style>
   <title>Nephridium-powered page</title>
   <link rel="shortcut icon" href="#" />
+  <link rel="shortcut icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Filter_font_awesome.svg/32px-Filter_font_awesome.svg.png"/>
 </head>
 <body>
   <div id="description">
@@ -231,109 +235,13 @@ exports.transformData = function (data) {
 };
 
 exports.css = function () {
-  return Object.freeze(`
-* {
-  border-collapse: collapse;
-  padding: 5px;
-  font-family: helvetica;
-}
-
-th {
-  text-transform: uppercase;
-  border: 2px solid black;
-  background-color: lightblue;
-}
-
-td {
-  border: 1px solid black;
-  max-width: 20em;
-}
-
-.error {
-  text-align: center;
-  color: red;
-  font-size: 3em;
-}
-
-#download {
-  margin-right: 10em;
-}
-
-#description {
-  text-align: center;
-  padding: 0;
-}
-
-h1 {
-  margin: 0;
-}
-
-button {
-  border: 2px solid blue;
-  border-radius: 4px;
-}
-
-button:hover {
-  color: white;
-  cursor: pointer;
-  background-color: blue;
-}
-
-#version {
-  text-align: center;
-  font-size: 1em;
-}
-
-#filters * {
-  list-style-type: none;
-  margin: 0;
-}
-`)
+  return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8')
 };
 
 exports.javascript = function () {
   return Object.freeze(`
   <script type="text/javascript">
-    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-    function exportTableToCSV(filename) {
-      let csv = [];
-      const rows = document.querySelectorAll("table tr");
-
-      for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll("td, th");
-
-        for (var j = 0; j < cols.length; j++) {
-          row.push(cols[j].innerText);
-        }
-
-        csv.push(row.join(","));
-      }
-
-      downloadCSV(csv.join('\\n'), filename);
-    }
-
-    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-    function downloadCSV(csv, filename) {
-      const csvFile = new Blob([csv], {type: "text/csv"});
-      const downloadLink = document.createElement("a");
-      downloadLink.download = filename;
-      downloadLink.href = window.URL.createObjectURL(csvFile);
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
-
-      downloadLink.click();
-    }
-
-    function toggleFilterDisplay() {
-      const style = document.getElementById('filters').style.display;
-      if (style && style == 'block') {
-        document.getElementById('filters').style.display = 'none';
-        const b = document.getElementById('toggleFilters').innerText = 'Show Filters';
-      } else {
-        document.getElementById('filters').style.display = 'block';
-        const b = document.getElementById('toggleFilters').innerText = 'Hide Filters';
-      }
-    }
+    ${fs.readFileSync(path.resolve(__dirname, './assets/nephridium.js'), 'utf8')}
   </script>`);
 };
 
