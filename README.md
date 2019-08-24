@@ -45,6 +45,9 @@ Make sure DATASET_URL is last!
 
 If we want to further filter the dataset we can do that, too.
 
+### Adding a title
+Set `display_title` to a encoded URL string. This means you need to use `+` or `%20` to represent spaces. See [this page](https://www.w3schools.com/tags/ref_urlencode.asp) for more encoding mappings.
+
 ### Excluding columns
 In our example, let's say we don't want to see the county column. We'll add a `to_remove` parameter for that.
 
@@ -95,7 +98,7 @@ https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/s
 ```bash
 sam local start-api --region us-east-1
 
-http://127.0.0.1:3000/?district_council=8&time_column=request_date&to_remove=count,district_council,map_location,map_location_address,map_location_city,map_location_state,map_location_zip&url=https://information.stpaul.gov/resource/qtkm-psvs
+http://127.0.0.1:3000/?district_council=8&time_column=request_date&to_remove=count,district_council,map_location,map_location_address,map_location_city,map_location_state,map_location_zip,see_click_fix_website_submission&display_title=City+of+Saint+Paul+-+Citizen+Service+Requests&url=https://information.stpaul.gov/resource/qtkm-psvs
 ```
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function. Note that CloudFront (but not your local api) returns a 403 when it receives a GET with a body, so you must use query parameters instead.

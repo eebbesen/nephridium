@@ -8,7 +8,7 @@ const path = require('path')
 const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
 const releaseVersion = require('./package.json').version;
-const paramsToRemove = ['time_column','url','time_range','to_remove'];
+const paramsToRemove = ['time_column','url','time_range','to_remove','display_title'];
 
 /**
  *
@@ -139,7 +139,9 @@ exports.buildTableData = function(data) {
 exports.buildFiltersDisplay = function(params) {
   let filter = '';
   if (params) {
-    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}`);
+    delete params.display_title;
+
+    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
     let fss = '';
     fs.forEach(f => fss += f);
     filter = `
@@ -168,7 +170,7 @@ exports.html = function (data, socrataUrl, params) {
 <body>
   <div id="description">
     <h1>
-      <a href="${socrataUrl}">City of Saint Paul Resident Service Requests</a>
+      <a href="${socrataUrl}">${this.getDisplayTitle(params)}</a>
     </h1>
   </div>
   <div>
@@ -184,6 +186,14 @@ exports.html = function (data, socrataUrl, params) {
 </html>`);
 };
 
+exports.getDisplayTitle = function(params) {
+  if (params && params.display_title && params.display_title.length > 0) {
+    return params.display_title;
+  }
+
+  return ''
+}
+
 // return object with only query filter params
 exports.getFilterParams = function (params) {
   const p = Object.assign({}, params);
@@ -196,7 +206,6 @@ exports.getFilterParams = function (params) {
 };
 
 exports.removeAttributes = function (data, toRemove) {
-  // don't mutate input
   const d = JSON.parse(JSON.stringify(data));
   if (toRemove) {
     const tr = toRemove.split(',');
