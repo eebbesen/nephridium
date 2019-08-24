@@ -1,11 +1,14 @@
 const axios = require('axios');
 const tableify = require('tableify');
 
+const fs = require('fs')
+const path = require('path')
+
 // const dayMs = 86400000;
 const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
 const releaseVersion = require('./package.json').version;
-const paramsToRemove = ['time_column','url','time_range','to_remove'];
+const paramsToRemove = ['time_column','url','time_range','to_remove','display_title'];
 
 /**
  *
@@ -133,10 +136,12 @@ exports.buildTableData = function(data) {
   return tableify(data);
 }
 
-exports.html = function (data, socrataUrl, params) {
+exports.buildFiltersDisplay = function(params) {
   let filter = '';
   if (params) {
-    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}`);
+    delete params.display_title;
+
+    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
     let fss = '';
     fs.forEach(f => fss += f);
     filter = `
@@ -149,6 +154,10 @@ exports.html = function (data, socrataUrl, params) {
 `;
   }
 
+  return filter;
+}
+
+exports.html = function (data, socrataUrl, params) {
   return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
@@ -156,11 +165,12 @@ exports.html = function (data, socrataUrl, params) {
   <style>${this.css()}</style>
   <title>Nephridium-powered page</title>
   <link rel="shortcut icon" href="#" />
+  <link rel="shortcut icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Filter_font_awesome.svg/32px-Filter_font_awesome.svg.png"/>
 </head>
 <body>
   <div id="description">
     <h1>
-      <a href="${socrataUrl}">City of Saint Paul Resident Service Requests</a>
+      <a href="${socrataUrl}">${this.getDisplayTitle(params)}</a>
     </h1>
   </div>
   <div>
@@ -168,13 +178,21 @@ exports.html = function (data, socrataUrl, params) {
     <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
     <button id="toggleFilters" type="button" onclick="toggleFilterDisplay()">Show Filters</button>
   </div>
-  ${filter}
+  ${this.buildFiltersDisplay(params)}
   <div>${this.buildTableData(data)}</div>
   <div id="version">nephridium version: ${releaseVersion}</div>
   ${this.javascript()}
 </body>
 </html>`);
 };
+
+exports.getDisplayTitle = function(params) {
+  if (params && params.display_title && params.display_title.length > 0) {
+    return params.display_title;
+  }
+
+  return ''
+}
 
 // return object with only query filter params
 exports.getFilterParams = function (params) {
@@ -188,7 +206,6 @@ exports.getFilterParams = function (params) {
 };
 
 exports.removeAttributes = function (data, toRemove) {
-  // don't mutate input
   const d = JSON.parse(JSON.stringify(data));
   if (toRemove) {
     const tr = toRemove.split(',');
@@ -231,109 +248,13 @@ exports.transformData = function (data) {
 };
 
 exports.css = function () {
-  return Object.freeze(`
-* {
-  border-collapse: collapse;
-  padding: 5px;
-  font-family: helvetica;
-}
-
-th {
-  text-transform: uppercase;
-  border: 2px solid black;
-  background-color: lightblue;
-}
-
-td {
-  border: 1px solid black;
-  max-width: 20em;
-}
-
-.error {
-  text-align: center;
-  color: red;
-  font-size: 3em;
-}
-
-#download {
-  margin-right: 10em;
-}
-
-#description {
-  text-align: center;
-  padding: 0;
-}
-
-h1 {
-  margin: 0;
-}
-
-button {
-  border: 2px solid blue;
-  border-radius: 4px;
-}
-
-button:hover {
-  color: white;
-  cursor: pointer;
-  background-color: blue;
-}
-
-#version {
-  text-align: center;
-  font-size: 1em;
-}
-
-#filters * {
-  list-style-type: none;
-  margin: 0;
-}
-`)
+  return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8')
 };
 
 exports.javascript = function () {
   return Object.freeze(`
   <script type="text/javascript">
-    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-    function exportTableToCSV(filename) {
-      let csv = [];
-      const rows = document.querySelectorAll("table tr");
-
-      for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll("td, th");
-
-        for (var j = 0; j < cols.length; j++) {
-          row.push(cols[j].innerText);
-        }
-
-        csv.push(row.join(","));
-      }
-
-      downloadCSV(csv.join('\\n'), filename);
-    }
-
-    // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-    function downloadCSV(csv, filename) {
-      const csvFile = new Blob([csv], {type: "text/csv"});
-      const downloadLink = document.createElement("a");
-      downloadLink.download = filename;
-      downloadLink.href = window.URL.createObjectURL(csvFile);
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
-
-      downloadLink.click();
-    }
-
-    function toggleFilterDisplay() {
-      const style = document.getElementById('filters').style.display;
-      if (style && style == 'block') {
-        document.getElementById('filters').style.display = 'none';
-        const b = document.getElementById('toggleFilters').innerText = 'Show Filters';
-      } else {
-        document.getElementById('filters').style.display = 'block';
-        const b = document.getElementById('toggleFilters').innerText = 'Hide Filters';
-      }
-    }
+    ${fs.readFileSync(path.resolve(__dirname, './assets/nephridium.js'), 'utf8')}
   </script>`);
 };
 
