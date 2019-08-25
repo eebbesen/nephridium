@@ -62,7 +62,7 @@ exports.lambdaHandler = async (event, _context) => {
       const retData = this.removeAttributes(ret.data, params.to_remove);
       const modData = this.transformData(retData);
       const filterParams = this.getFilterParams(params);
-      const web = this.html(modData, url, filterParams);
+      const web = this.html(modData, url, filterParams, params.url);
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
@@ -157,7 +157,7 @@ exports.buildFiltersDisplay = function(params) {
   return filter;
 }
 
-exports.html = function (data, socrataUrl, params) {
+exports.html = function (data, socrataUrl, params, datasetUrl) {
   return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
@@ -170,7 +170,7 @@ exports.html = function (data, socrataUrl, params) {
 <body>
   <div id="description">
     <h1>
-      <a href="${socrataUrl}">${this.getDisplayTitle(params)}</a>
+      <a href="${datasetUrl}">${this.getDisplayTitle(params)}</a>
     </h1>
   </div>
   <div>
