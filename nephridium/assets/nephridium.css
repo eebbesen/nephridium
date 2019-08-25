@@ -1,7 +1,7 @@
 * {
   border-collapse: collapse;
   padding: 5px;
-  font-family: helvetica;
+  font-family: helvetica;;
 }
 
 th {
@@ -37,6 +37,7 @@ h1 {
 button {
   border: 2px solid blue;
   border-radius: 4px;
+  margin: 0 10px;
 }
 
 button:hover {
@@ -53,4 +54,16 @@ button:hover {
 #filters * {
   list-style-type: none;
   margin: 0;
+  display: flex;
+  justify-content: center;
 }
+
+table {
+  margin: 0 auto;
+}
+
+#buttons {
+  display: flex;
+  justify-content: center;
+}
+

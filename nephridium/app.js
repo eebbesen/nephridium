@@ -133,7 +133,7 @@ exports.buildTableData = function(data) {
     return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
   }
 
-  return tableify(data);
+  return `<div id="data_table">${tableify(data)}</div>`;
 }
 
 exports.buildFiltersDisplay = function(params) {
@@ -173,7 +173,7 @@ exports.html = function (data, socrataUrl, params, datasetUrl) {
       <a href="${datasetUrl}">${this.getDisplayTitle(params)}</a>
     </h1>
   </div>
-  <div>
+  <div id="buttons">
     <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
     <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
     <button id="toggleFilters" type="button" onclick="toggleFilterDisplay()">Show Filters</button>
