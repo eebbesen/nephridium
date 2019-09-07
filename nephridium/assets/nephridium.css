@@ -1,4 +1,4 @@
-* {
+*:not(.footerElement) {
   border-collapse: collapse;
   padding: 5px;
   font-family: helvetica;;
@@ -46,9 +46,25 @@ button:hover {
   background-color: blue;
 }
 
-#version {
+#footer {
   text-align: center;
   font-size: 1em;
+  width: 30em;
+  margin: auto;
+}
+
+#footerElementLeft {
+  float: left;
+  text-align: right;
+  /*margin: 20px 10px;*/
+  display: inline;
+}
+
+#footerElementRight {
+  float: right;
+  text-align: left;
+  /*margin: 2px 10px;*/
+  display: inline;
 }
 
 #filters * {
