@@ -173,6 +173,7 @@ exports.html = function (data, socrataUrl, params, datasetUrl) {
       <a href="${datasetUrl}">${this.getDisplayTitle(params)}</a>
     </h1>
   </div>
+
   <div id="buttons">
     <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
     <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
@@ -180,7 +181,9 @@ exports.html = function (data, socrataUrl, params, datasetUrl) {
   </div>
   ${this.buildFiltersDisplay(params)}
   <div>${this.buildTableData(data)}</div>
-  <div id="version">nephridium version: ${releaseVersion}</div>
+  <div id="footer">
+    <div class="footerElement" id="footerElementLeft">nephridium version: ${releaseVersion}</div><div id="footerElementRight" class="footerElement">Get the source code <a id="github" class="footerElement" href="https://github.com/eebbesen/nephridium">here</a></div>
+  </div>
   ${this.javascript()}
 </body>
 </html>`);
