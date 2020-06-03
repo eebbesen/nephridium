@@ -72,7 +72,7 @@ See the Socrata API documentation for more options, especially
 ### Requirements
 
 * AWS CLI already configured with at least PowerUser permission
-* [NodeJS 8.10+ installed](https://nodejs.org/en/download/)
+* [NodeJS 12+ installed](https://nodejs.org/en/download/)
 * [Docker](https://www.docker.com/community-edition) installed and running
 
 ### Setup process
