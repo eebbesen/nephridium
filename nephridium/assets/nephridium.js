@@ -14,7 +14,7 @@ function exportTableToCSV(filename) {
     csv.push(row.join(','));
   }
 
-  downloadCSV(csv.join('\\n'), filename);
+  downloadCSV(csv.join('\n'), filename);
 }
 
 // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
