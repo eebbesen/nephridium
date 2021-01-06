@@ -1,14 +1,15 @@
 const axios = require('axios');
-const tableify = require('tableify');
+const json2html = require('node-json2html');
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 
 // const dayMs = 86400000;
 const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
 const releaseVersion = require('./package.json').version;
-const paramsToRemove = ['time_column','url','time_range','to_remove','display_title'];
+
+const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title'];
 
 /**
  *
@@ -108,10 +109,10 @@ exports.buildUrl = function (params) {
 // removes some params for all calls, plus any keys in the to_remove parameter
 exports.buildCustomParams = function (params) {
   const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',');
-  const rem = customNo.filter(key => {!params[key]});
+  const rem = customNo.filter((key) => { !params[key]; });
 
   const data = Object.assign({}, params);
-  paramsToRemove.concat(rem).forEach(k => { delete data[k] });
+  paramsToRemove.concat(rem).forEach((k) => { delete data[k]; });
 
   return data;
 };
@@ -128,15 +129,20 @@ exports.normalizeDate = function (date) {
   return date.substring(0, 10);
 };
 
-exports.buildTableData = function(data) {
-  if (data.length < 1) {
+exports.buildTableData = function (data) {
+  if (data == null || data.length < 1) {
     return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
   }
 
-  return `<div id="data_table">${tableify(data)}</div>`;
-}
+  const keys = Object.keys(data[0]);
+  const tableHead = keys.map(k => `<th>${k}</th>`).join('');
+  const tableData = keys.map(k => `<td>\${${k}}</td>`).join('');
+  const bodyDataTemplate = { '<>': 'tr', html: tableData };
 
-exports.buildFiltersDisplay = function(params) {
+  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.transform(data, bodyDataTemplate)}</tbody></table></div>`;
+};
+
+exports.buildFiltersDisplay = function (params) {
   let filter = '';
   if (params) {
     delete params.display_title;
@@ -155,7 +161,7 @@ exports.buildFiltersDisplay = function(params) {
   }
 
   return filter;
-}
+};
 
 exports.html = function (data, socrataUrl, params, datasetUrl) {
   return Object.freeze(`
@@ -189,13 +195,13 @@ exports.html = function (data, socrataUrl, params, datasetUrl) {
 </html>`);
 };
 
-exports.getDisplayTitle = function(params) {
+exports.getDisplayTitle = function (params) {
   if (params && params.display_title && params.display_title.length > 0) {
     return params.display_title;
   }
 
-  return ''
-}
+  return '';
+};
 
 // return object with only query filter params
 exports.getFilterParams = function (params) {
@@ -251,7 +257,7 @@ exports.transformData = function (data) {
 };
 
 exports.css = function () {
-  return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8')
+  return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8');
 };
 
 exports.javascript = function () {
