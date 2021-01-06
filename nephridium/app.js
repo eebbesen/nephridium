@@ -1,5 +1,5 @@
 const axios = require('axios');
-const tableify = require('tableify');
+const json2html = require('node-json2html');
 
 const fs = require('fs')
 const path = require('path')
@@ -9,6 +9,7 @@ const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
 const releaseVersion = require('./package.json').version;
 const paramsToRemove = ['time_column','url','time_range','to_remove','display_title'];
+const dataTemplate = {'<>':'tr', 'html': '${a}'};
 
 /**
  *
@@ -129,12 +130,17 @@ exports.normalizeDate = function (date) {
 };
 
 exports.buildTableData = function(data) {
-  if (data.length < 1) {
+  if (null == data || data.length < 1) {
     return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
   }
 
-  return `<div id="data_table">${tableify(data)}</div>`;
-}
+  const keys = Object.keys(data[0])
+  const tableHead = keys.map(k => `<th>${k}</th>`).join('');
+  const tableData = keys.map(k => "<td>${" + k + "}</td>").join('');
+  const bodyDataTemplate = {'<>':'tr', 'html': tableData};
+
+  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.transform(data, bodyDataTemplate)}</tbody></table></div>`;
+};
 
 exports.buildFiltersDisplay = function(params) {
   let filter = '';
@@ -155,7 +161,7 @@ exports.buildFiltersDisplay = function(params) {
   }
 
   return filter;
-}
+};
 
 exports.html = function (data, socrataUrl, params, datasetUrl) {
   return Object.freeze(`
@@ -194,8 +200,8 @@ exports.getDisplayTitle = function(params) {
     return params.display_title;
   }
 
-  return ''
-}
+  return '';
+};
 
 // return object with only query filter params
 exports.getFilterParams = function (params) {

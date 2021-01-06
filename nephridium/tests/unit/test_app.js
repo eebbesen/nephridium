@@ -3,6 +3,34 @@ const app = require('../../app.js');
 
 const { expect } = chai;
 
+describe('buildTableData', () => {
+  it('returns no records found when null data', () => {
+    const ret = app.buildTableData(null);
+    expect(ret).to.equal('<div class="error"><p>No records found</p><p>Please expand your search</p></div>');
+  });
+
+  it('returns no records found when empty data', () => {
+    const ret = app.buildTableData([]);
+    expect(ret).to.equal('<div class="error"><p>No records found</p><p>Please expand your search</p></div>');
+  });
+
+  it('returns properly-formatted records', () => {
+    const data = {
+                    a: '2018-10-01 00:00:01',
+                    b: 2,
+                    d: '7T989',
+                    'name one': '2018-10-01',
+                    'c you later': '3'
+                  };
+
+    const ret = app.buildTableData([data]);
+
+    const expectedHeader = '<thead><tr><th>a</th><th>b</th><th>d</th><th>name one</th><th>c you later</th></tr></thead>';
+    const expectedBody = '<tbody><tr><td>2018-10-01 00:00:01</td><td>2</td><td>7T989</td><td>2018-10-01</td><td>3</td></tr></tbody>'
+    expect(ret).to.equal(`<div id="data_table"><table>${expectedHeader}${expectedBody}</table></div>`);
+  });
+});
+
 describe('buildFiltersDisplay', () => {
   it('does not include display_title in output', () => {
     const ret = app.buildFiltersDisplay({
@@ -342,7 +370,6 @@ describe('Tests index', () => {
       }];
 
       const result = app.transformData(data)[0];
-
       expect(result['name one']).to.equal('2018-10-01');
       expect(result.a).to.equal('2018-10-01 00:00:01');
       expect(result.b).to.equal(2);

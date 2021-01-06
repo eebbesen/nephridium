@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.21.1",
-    "tableify": "^1.1.0"
+    "node-json2html": ">=1.4.0"
   },
   "scripts": {
     "test": "nyc -x '**/tests/**' mocha tests/unit/",
