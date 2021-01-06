@@ -9,7 +9,6 @@ const weekMs = 604800000;
 const thirtyDayMs = 2592000000;
 const releaseVersion = require('./package.json').version;
 const paramsToRemove = ['time_column','url','time_range','to_remove','display_title'];
-const dataTemplate = {'<>':'tr', 'html': '${a}'};
 
 /**
  *
