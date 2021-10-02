@@ -7,7 +7,7 @@
   "author": "eebbesen",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "node-json2html": ">=1.4.0"
   },
   "scripts": {
