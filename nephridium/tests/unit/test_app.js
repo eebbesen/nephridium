@@ -301,7 +301,7 @@ describe('Tests index', () => {
       };
 
       const response = await app.lambdaHandler(event, null);
-      expect(response.errno).to.equal('ENOTFOUND');
+      expect(response.code).to.equal('ENOTFOUND');
     });
 
     it('retrns a descriptive error message when no time_column', async () => {
