@@ -135,7 +135,7 @@ exports.buildTableData = function (data) {
   }
 
   const keys = Object.keys(data[0]);
-  const tableHead = keys.map(k => `<th>${k}</th>`).join('');
+  const tableHead = keys.map(k => `<th>${k.replace(/_/g," ")}</th>`).join('');
   const tableData = keys.map(k => `<td>\${${k}}</td>`).join('');
   const bodyDataTemplate = { '<>': 'tr', html: tableData };
 
@@ -229,7 +229,6 @@ exports.removeAttributes = function (data, toRemove) {
 };
 
 // strip time from dates that don't have non-zero time
-// remove underscores from keys
 // todo: refactor to be functional and take in a list of functions to do the transforamtions
 exports.transformData = function (data) {
   data.forEach((row) => {
@@ -238,12 +237,6 @@ exports.transformData = function (data) {
         row[k] = row[k].replace('T00:00:00.000', '');
         if (row[k].match(/\dT\d/) && row[k].endsWith('.000')) {
           row[k] = row[k].replace('.000', '').replace('T', ' ');
-        }
-
-        if (k.includes('_')) {
-          const kNew = k.replace(/_/g, ' ');
-          row[kNew] = row[k];
-          delete row[k];
         }
 
         if (k == ('location')) {

@@ -127,6 +127,8 @@ $RECYCLE.BIN/
 
 # AWS
 packaged.yaml
+.aws-sam
+samconfig.toml
 
 local_snippets.txt
 notes.md

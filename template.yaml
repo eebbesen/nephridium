@@ -1,7 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-    sam_nephridium
+Description: sam_nephridium
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -14,9 +13,9 @@ Resources:
     ReportFunction:
         Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
         Properties:
-            CodeUri: nephridium/
+            CodeUri: nephridium
             Handler: app.lambdaHandler
-            Runtime: nodejs12.x
+            Runtime: nodejs14.x
             # Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
             #     Variables:
             #         PARAM1: VALUE
