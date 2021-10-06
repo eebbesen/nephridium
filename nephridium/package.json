@@ -1,14 +1,14 @@
 {
   "name": "nephridium",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "description": "An AWS Serverless Appliction that produces filtered Socrata datasets",
   "main": "src/app.js",
   "repository": "https://github.com/eebbesen/nephridium",
   "author": "eebbesen",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1",
-    "node-json2html": ">=1.4.0"
+    "axios": ">=0.22.0",
+    "node-json2html": ">=2.1.0"
   },
   "scripts": {
     "test": "nyc -x '**/tests/**' mocha tests/unit/",

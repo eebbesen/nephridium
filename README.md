@@ -95,9 +95,18 @@ You can modify *nephridium* to return JSON instead of HTML, internallly filter y
 **Invoking function locally through local API Gateway**
 
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-local-start-api.html
+
+Build the app to see changes
+```bash
+sam build
+```
+
+Then start the application server locally
 ```bash
 sam local start-api --region us-east-1
+```
 
+And test by loading nephridium with data
 http://127.0.0.1:3000/?district_council=8&time_column=request_date&to_remove=count,district_council,map_location,map_location_address,map_location_city,map_location_state,map_location_zip,see_click_fix_website_submission&display_title=City+of+Saint+Paul+-+Citizen+Service+Requests&url=https://information.stpaul.gov/resource/qtkm-psvs
 ```
 
@@ -221,6 +230,11 @@ npm run lint -- --fix
 ## AWS CLI commands
 
 AWS CLI commands to package, deploy and describe outputs defined within the cloudformation stack:
+```bash
+sam deploy
+```
+
+```
 
 ```bash
 sam package \
