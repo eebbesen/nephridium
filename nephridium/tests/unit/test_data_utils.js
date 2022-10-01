@@ -13,11 +13,6 @@ describe('transformDate', () => {
     expect(data_utils.transformDate(null)).to.be.null;
   });
 
-  it('transforms local ISO string to date', () => {
-    const ret = data_utils.transformDate("2022-08-30T00:00:00.000");
-    expect(ret.getTime()).to.equal(1661835600000);
-  });
-
   it('transforms UTC ISO string to date', () => {
     const ret = data_utils.transformDate("2022-08-30T00:00:00.000Z");
     expect(ret.getTime()).to.equal(1661817600000);

@@ -232,22 +232,22 @@ describe('Tests index', () => {
       expect(body).to.contain('beach');
     }).timeout(15000);
 
-    // add .skip or comment out if you don't want to execute this live test
-    it('gets data with additional filters ARC GIS', async () => {
-      console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
-      const event = {};
-      event.queryStringParameters = {
-        url: 'https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/0/query',
-        time_column: 'date',
-        request_type: 'Complaint'
-      };
+    // // add .skip or comment out if you don't want to execute this live test
+    // it('gets data with additional filters ARC GIS', async () => {
+    //   console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
+    //   const event = {};
+    //   event.queryStringParameters = {
+    //     url: 'https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/0/query',
+    //     time_column: 'date',
+    //     request_type: 'Complaint'
+    //   };
 
-      const response = await app.lambdaHandler(event, null);
-      const { body, statusCode } = response;
+    //   const response = await app.lambdaHandler(event, null);
+    //   const { body, statusCode } = response;
 
-      expect(statusCode).to.equal(200);
-      expect(body).to.contain('district');
-    }).timeout(15000);
+    //   expect(statusCode).to.equal(200);
+    //   expect(body).to.contain('district');
+    // }).timeout(15000);
 
     // add .skip or comment out if you don't want to execute this live test
     it('handles sending bad data to Socrata', async () => {
