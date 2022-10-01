@@ -1,5 +1,7 @@
 const chai = require('chai');
-const arc_gis = require('../../arc_gis.js');
+const arcGis = require('../../arc_gis.js');
+const uiUtils = require('../../ui_utils.js');
+const app = require('../../app.js');
 
 const { expect } = chai;
 
@@ -59,10 +61,25 @@ describe('transform', () => {
       ]
     }];
 
-    const ret = arc_gis.transform(data);
+    const ret = arcGis.transform(data);
 
     expect(ret.length).to.equal(2);
     expect(ret[0]['SERVICE_NUMBER']).to.equal(4041371);
     expect(ret[1]['SERVICE_NUMBER']).to.equal(4041373);
+  });
+
+  describe('buildUrl', () => {
+    it('builds url for one week', () => {
+      const expectedDate = uiUtils.buildDate(new Date().toISOString(), 'w');
+      const params = {
+        url: 'https://a.socrata.dataset.com/resource/abcd-efgh',
+        time_range: 'w',
+        time_column: 'request_date',
+      };
+
+      const result = arcGis.buildUrl(params);
+
+      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27&$order=request_date%20DESC`);
+    });
   });
 });

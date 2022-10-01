@@ -1,15 +1,5 @@
 const uiUtils = require('./ui_utils.js');
 
-exports.transform = function (json) {
-  const data = [];
-
-  json[0]["features"].forEach((record) => {
-    data.push(record["attributes"]);
-  });
-
-  return data;
-};
-
 exports.buildUrl = function (params) {
   const baseUrl = params.url;
   const timeColumn = params.time_column;

@@ -1,7 +1,31 @@
 const chai = require('chai');
 const app = require('../../app.js');
+const socrata = require('../../socrata.js');
+const arcGis = require('../../arc_gis.js');
 
 const { expect } = chai;
+
+describe('helper', () => {
+  it('returns socrata with no provider param', () => {
+    expect(app.helper({})).to.equal(socrata);
+  });
+
+  it('returns socrata with provider param socrata', () => {
+    expect(app.helper({provider: "socrata"})).to.equal(socrata);
+  });
+
+  it('returns socrata with provider param invalid', () => {
+    expect(app.helper({provider: "blah"})).to.equal(socrata);
+  });
+
+  it('returns socrata with null params', () => {
+    expect(app.helper(null)).to.equal(socrata);
+  });
+
+  it('returns arcGis with provider param argGis', () => {
+    expect(app.helper({provider: "arcGis"})).to.equal(arcGis);
+  });
+});
 
 describe('buildTableData', () => {
   it('returns no records found when null data', () => {
@@ -178,88 +202,6 @@ describe('Tests index', () => {
     });
   });
 
-  describe('date functions', () => {
-    it('normalizeDate strips from date', () => {
-      const result = app.normalizeDate('2018-10-05T05:16:11.345Z');
-
-      expect(result).to.equal('2018-10-05');
-    });
-
-    it('buildDate does date arithmetic for one week', () => {
-      const result = app.buildDate('2018-10-05T05:16:11.345Z', 'w');
-
-      expect(result).to.equal('2018-09-28');
-    });
-
-    it('buildDate does date arithmetic for 60 days', () => {
-      const result = app.buildDate('2018-10-05T05:16:11.345Z', null);
-
-      expect(result).to.equal('2018-08-06');
-    });
-  });
-
-  describe('buildUrl', () => {
-    it('builds url for one week', () => {
-      const expectedDate = app.buildDate(new Date().toISOString(), 'w');
-      const params = {
-        url: 'https://a.socrata.dataset.com/resource/abcd-efgh',
-        time_range: 'w',
-        time_column: 'request_date',
-      };
-
-      const result = app.buildUrl(params);
-
-      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27&$order=request_date%20DESC`);
-    });
-  });
-
-  describe('buildCustomParams', () => {
-    it('removes default removes', () => {
-      const params = {
-        first: 'fone',
-        time_column: 'created_at',
-        url: 'https://a.socrata.dataset.com',
-        third: 'tone',
-      };
-
-      const result = app.buildCustomParams(params);
-
-      expect(Object.keys(result).length).to.equal(2);
-      expect(result.first).to.equal('fone');
-      expect(result.third).to.equal('tone');
-    });
-
-    it('removes default removes and custom to_remove', () => {
-      const params = {
-        time_column: 'created_at',
-        url: 'https://a.socrata.dataset.com',
-        third: 'tone',
-        to_remove: 'c1,c5,first',
-      };
-
-      const result = app.buildCustomParams(params);
-
-      expect(Object.keys(result).length).to.equal(1);
-      expect(result.third).to.equal('tone');
-    });
-
-    it('does not remove filter params', () => {
-      const params = {
-        first: 'fone',
-        time_column: 'created_at',
-        url: 'https://a.socrata.dataset.com',
-        third: 'tone',
-        to_remove: 'c1,c5,first',
-      };
-
-      const result = app.buildCustomParams(params);
-
-      expect(Object.keys(result).length).to.equal(2);
-      expect(result.first).to.equal('fone');
-      expect(result.third).to.equal('tone');
-    });
-  });
-
   describe('buildErrors', () => {
     it('retrns a descriptive error message when no url and no time_column', () => {
       const params = {
@@ -274,22 +216,40 @@ describe('Tests index', () => {
 
   describe('lambdaHandler', () => {
     // add .skip or comment out if you don't want to execute this live test
-    it('gets data with additional filters', async () => {
+    it('gets data with additional filters Socrata', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
       const event = {};
       event.queryStringParameters = {
-        url: 'https://information.stpaul.gov/resource/qtkm-psvs',
-        time_column: 'request_date',
-        request_type: 'Complaint',
+        url: 'https://data.ramseycounty.us/resource/2yt3-vdb6',
+        time_column: 'date',
+        status: 'Open'
       };
 
       const response = await app.lambdaHandler(event, null);
       const { body, statusCode } = response;
 
       expect(statusCode).to.equal(200);
-      expect(body).to.contain('Complaint');
+      expect(body).to.contain('beach');
     }).timeout(15000);
 
+    // add .skip or comment out if you don't want to execute this live test
+    it('gets data with additional filters ARC GIS', async () => {
+      console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
+      const event = {};
+      event.queryStringParameters = {
+        url: 'https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/0/query',
+        time_column: 'date',
+        request_type: 'Complaint'
+      };
+
+      const response = await app.lambdaHandler(event, null);
+      const { body, statusCode } = response;
+
+      expect(statusCode).to.equal(200);
+      expect(body).to.contain('district');
+    }).timeout(15000);
+
+    // add .skip or comment out if you don't want to execute this live test
     it('handles sending bad data to Socrata', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
       const event = {};
@@ -305,7 +265,7 @@ describe('Tests index', () => {
     it('retrns a descriptive error message when no time_column', async () => {
       const event = {};
       event.queryStringParameters = {
-        url: 'https://information.stpaul.gov/resource/qtkm-psvs',
+        url: 'https://data.ramseycounty.us/resource/2yt3-vdb6',
         district_council: '8',
       };
 

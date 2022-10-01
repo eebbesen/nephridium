@@ -1,15 +1,12 @@
 const axios = require('axios');
 const json2html = require('node-json2html');
-
 const fs = require('fs');
 const path = require('path');
 
-// const dayMs = 86400000;
-const weekMs = 604800000;
-const thirtyDayMs = 2592000000;
-const releaseVersion = require('./package.json').version;
+const socrata = require('./socrata.js');
+const arcGis = require('./arc_gis.js');
 
-const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title'];
+const releaseVersion = require('./package.json').version;
 
 /**
  *
@@ -58,7 +55,8 @@ exports.lambdaHandler = async (event, _context) => {
         body: JSON.stringify({ message: errors }),
       };
     } else {
-      const url = this.buildUrl(params);
+      const helper = this.helper(params);
+      const url = helper.buildUrl(params);
       const ret = await axios(url);
       const retData = this.removeAttributes(ret.data, params.to_remove);
       const modData = this.transformData(retData);
@@ -91,6 +89,11 @@ exports.buildErrors = function (params) {
   return response;
 };
 
+// arcGis or Socrata
+exports.helper = function (params) {
+  return params && params['provider'] && params['provider'] === 'arcGis' ? arcGis : socrata;
+}
+
 exports.buildUrl = function (params) {
   const baseUrl = params.url;
   const timeColumn = params.time_column;
@@ -104,29 +107,6 @@ exports.buildUrl = function (params) {
   });
 
   return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}&$order=${timeColumn}%20DESC`;
-};
-
-// removes some params for all calls, plus any keys in the to_remove parameter
-exports.buildCustomParams = function (params) {
-  const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',');
-  const rem = customNo.filter((key) => { !params[key]; });
-
-  const data = Object.assign({}, params);
-  paramsToRemove.concat(rem).forEach((k) => { delete data[k]; });
-
-  return data;
-};
-
-exports.buildDate = function (date, range) {
-  const initDate = new Date(`${this.normalizeDate(date)}T00:00:00.000`);
-  const modifier = range === 'w' ? weekMs : (2 * thirtyDayMs);
-  const endDate = new Date(initDate - modifier);
-
-  return this.normalizeDate(endDate.toISOString());
-};
-
-exports.normalizeDate = function (date) {
-  return date.substring(0, 10);
 };
 
 exports.buildTableData = function (data) {
