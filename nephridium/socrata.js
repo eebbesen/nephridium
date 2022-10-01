@@ -10,3 +10,8 @@ exports.buildUrl = function (params) {
 
   return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}&$order=${timeColumn}%20DESC`;
 };
+
+// no transformation needed for socrata
+exports.transform = function(data) {
+  return data;
+};
