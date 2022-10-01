@@ -1,4 +1,5 @@
 const uiUtils = require('./ui_utils.js');
+const DEFAULT_WHERE = `1%3D1`;
 
 exports.transform = function (json) {
   const data = [];
@@ -17,5 +18,5 @@ exports.buildUrl = function (params) {
 
   const dateVal = uiUtils.buildDate(new Date().toISOString(), timeRange);
 
-  return `${baseUrl}/0/query?where=1%3D1${pString}&orderByFields=${timeColumn}&outFields=*&f=json`;
+  return `${baseUrl}/0/query?where=${DEFAULT_WHERE}${pString}&orderByFields=${timeColumn}&outFields=*&f=json`;
 };
