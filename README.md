@@ -1,22 +1,22 @@
 # nephridium
-An [award-winning](https://devpost.com/software/nephridium) [AWS Serverless Application](https://aws.amazon.com/serverless/) that produces filtered Socrata datasets. _NOT_ affiliated with or endorsed by [Socrata](https://socrata.com/company-info/).
+An [award-winning](https://devpost.com/software/nephridium) [AWS Serverless Application](https://aws.amazon.com/serverless/) that produces filtered Socrata and ArcGIS datasets. _NOT_ affiliated with or endorsed by [Socrata](https://socrata.com/company-info/) or [ArcGIS](https://www.arcgis.com/index.html).
 
 [![CircleCI](https://circleci.com/gh/eebbesen/nephridium.svg?style=svg)](https://circleci.com/gh/eebbesen/nephridium)
 
 ## Why?
-Hundreds of local, state and federal government organizations use [Socrata](https://socrata.com/company-info/) to share data sets with the public. The public can interact with these datasets in various ways, but these ways may not be intuitive for the general public. And people who understand how to manipulate these datasets don't want to repeat the same manual tasks every day, week or month.
+Hundreds of local, state and federal government organizations use [Socrata](https://socrata.com/company-info/) and or [ArcGIS](https://www.arcgis.com/index.html) to share data sets with the public. The public can interact with these datasets in various ways, but these ways may not be intuitive for the general public. And people who understand how to manipulate these datasets don't want to repeat the same manual tasks every day, week or month.
 
-*nephridium* addresses the use case where a dynamically filtered Socrata dataset is desired over time. You specify the Socrata dataset, tell *nephridium* what the date attribute is and you get an HTML table of the data! *nephridium* offers additional parameters you can use to choose which attributes you want to display and to further filter your dataset.
+*nephridium* addresses the use case where a dynamically filtered Socrata or ArcGIS dataset is desired over time. You specify the dataset, tell *nephridium* what the date attribute is and you get an HTML table of the data! *nephridium* offers additional parameters you can use to choose which attributes you want to display and to further filter your dataset.
 
 
 ### A use case
 #### A repetitive task
 A [Saint Paul District Council](https://www.stpaul.gov/residents/live-saint-paul/neighborhoods/district-councils) Executive Director wants to know all of the resident service requests that created in her district the past week. And she wants this information every week.
 
-Saint Paul provides [the data](https://information.stpaul.gov/City-Infrastructure/Resident-Service-Requests-Dataset/3w6i-nfpw), but only in a way where the Executive Director has to enter filter information every single time she visits the site.
+Saint Paul provides [the data](https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json), but only in a way where the Executive Director has to enter filter information every single time she visits the site.
 
 #### A one-click solution...
-Since *nephridium* uses a look-back date filter, one URL will work in perpetuity. For example, `https://your_aws_url/?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs` will produce the previous 7 days' results for service requests in District 8.
+Since *nephridium* uses a look-back date filter, one URL will work in perpetuity. For example, `https://your_aws_url/?district_council=8&time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6` will produce the previous 7 days' results for service requests in District 8.
 
 #### ...that can become a no-click solution
 Once an URL is created it can be used with [IFTTT](https://ifttt.com), [Zapier](https://zapier.com/), [cron](https://en.wikipedia.org/wiki/Cron) or any other automation tool to scheule sending of an email with the requested data. Or cause an email to be sent when new data is found.
@@ -107,7 +107,7 @@ sam local start-api --region us-east-1
 ```
 
 And test by loading nephridium with data
-http://127.0.0.1:3000/?district_council=8&time_column=request_date&to_remove=count,district_council,map_location,map_location_address,map_location_city,map_location_state,map_location_zip,see_click_fix_website_submission&display_title=City+of+Saint+Paul+-+Citizen+Service+Requests&url=https://information.stpaul.gov/resource/qtkm-psvs
+http://127.0.0.1:3000/?district_council=8&time_column=request_date&to_remove=count,district_council,map_location,map_location_address,map_location_city,map_location_state,map_location_zip,see_click_fix_website_submission&display_title=City+of+Saint+Paul+-+Citizen+Service+Requests&url=https://data.ramseycounty.us/resource/2yt3-vdb6
 ```
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function. Note that CloudFront (but not your local api) returns a 403 when it receives a GET with a body, so you must use query parameters instead.
@@ -123,15 +123,15 @@ event_file.json
 ```json
 {
     "queryStringParameters": {
-        "time_column": "request_date",
-        "url": "https://information.stpaul.gov/resource/qtkm-psvs"
+        "time_column": "date",
+        "url": "https://data.ramseycounty.us/resource/2yt3-vdb6.json"
     }
 }
 ```
 
 
 ```bash
-echo '{"queryStringParameters": {"time_column": "request_date", "url": "https://information.stpaul.gov/resource/qtkm-psvs"}}'  | sam local invoke ReportFunction --region us-east-1
+echo '{"queryStringParameters": {"time_column": "date", "url": "https://data.ramseycounty.us/resource/2yt3-vdb6.json"}}'  | sam local invoke ReportFunction --region us-east-1
 ```
 
 ### Packaging and deployment
@@ -275,24 +275,24 @@ Providing test examples for local and deployed endpoints
 
 ### Bare minimum -- `time_column` and `url`
 ```bash
-curl -vvv 'http://127.0.0.1:3000/?time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs'
+curl -vvv 'http://127.0.0.1:3000/?time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs'
+curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6
 ```
 
 ### Custom parameters in query
 ```bash
-curl -vvv 'http://127.0.0.1:3000/?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs'
+curl -vvv 'http://127.0.0.1:3000/?status=Open&time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs'
+curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
 ```
 
 ### Custom parameters in query with filtered attributes
 ```bash
-curl -vvv -X GET 'http://127.0.0.1:3000/?district_council=8&time_column=request_date&to_remove=count,map_location&url=https://information.stpaul.gov/resource/qtkm-psvs'
+curl -vvv -X GET 'http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?district_council=8&time_column=request_date&to_remove=count,map_location&url=https://information.stpaul.gov/resource/qtkm-psvs'
+curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
 ```
 
 ## Accessibility testing
-http://wave.webaim.org/report#/https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?district_council=8&time_column=request_date&to_remove=count,map_location,see_click_fix_website_submission&url=https://information.stpaul.gov/resource/qtkm-psvs
+http://wave.webaim.org/report#/https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://data.ramseycounty.us/resource/2yt3-vdb6
