@@ -13,7 +13,7 @@ Hundreds of local, state and federal government organizations use [Socrata](http
 #### A repetitive task
 A [Saint Paul District Council](https://www.stpaul.gov/residents/live-saint-paul/neighborhoods/district-councils) Executive Director wants to know all of the resident service requests that created in her district the past week. And she wants this information every week.
 
-Saint Paul provides [the data](https://information.stpaul.gov/City-Infrastructure/Resident-Service-Requests-Dataset/3w6i-nfpw), but only in a way where the Executive Director has to enter filter information every single time she visits the site.
+Saint Paul provides [the data](https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json), but only in a way where the Executive Director has to enter filter information every single time she visits the site.
 
 #### A one-click solution...
 Since *nephridium* uses a look-back date filter, one URL will work in perpetuity. For example, `https://your_aws_url/?district_council=8&time_column=request_date&url=https://information.stpaul.gov/resource/qtkm-psvs` will produce the previous 7 days' results for service requests in District 8.
