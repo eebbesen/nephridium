@@ -7,7 +7,7 @@ const { expect } = chai;
 
 describe('transform', () => {
   it('transforms arc gis data', () => {
-    const data = [{
+    const data = {
       exceededTransferLimit:true,
       features:[
         {
@@ -59,7 +59,7 @@ describe('transform', () => {
           }
         }
       ]
-    }];
+    };
 
     const ret = arcGis.transform(data);
 
@@ -79,7 +79,7 @@ describe('transform', () => {
 
       const result = arcGis.buildUrl(params);
 
-      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh.json?$where=request_date%3E%27${expectedDate}%27&$order=request_date%20DESC`);
+      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh/0/query?where=1%3D1&orderByFields=request_date&outFields=*&f=json`);
     });
   });
 });

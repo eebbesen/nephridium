@@ -59,7 +59,8 @@ exports.lambdaHandler = async (event, _context) => {
       const url = helper.buildUrl(params);
       const ret = await axios(url);
       const retData = this.removeAttributes(ret.data, params.to_remove);
-      const modData = this.transformData(retData);
+      const transformedData = helper.transform(retData);
+      const modData = this.transformData(transformedData, helper);
       const filterParams = this.getFilterParams(params);
       const web = this.html(modData, url, filterParams, params.url);
       response = {

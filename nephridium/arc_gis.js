@@ -1,9 +1,9 @@
 const uiUtils = require('./ui_utils.js');
+const DEFAULT_WHERE = `1%3D1`;
 
 exports.transform = function (json) {
   const data = [];
-
-  json[0]["features"].forEach((record) => {
+  json["features"].forEach((record) => {
     data.push(record["attributes"]);
   });
 
@@ -12,11 +12,11 @@ exports.transform = function (json) {
 
 exports.buildUrl = function (params) {
   const baseUrl = params.url;
-  const timeColumn = params.time_column;
-  const timeRange = params.time_range || null;
+  const timeColumn = params['time_column'];
+  const timeRange = params['time_range'] || null;
   const pString = uiUtils.stringifyParams(params);
 
   const dateVal = uiUtils.buildDate(new Date().toISOString(), timeRange);
 
-  return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}&$order=${timeColumn}%20DESC`;
+  return `${baseUrl}/0/query?where=${DEFAULT_WHERE}${pString}&orderByFields=${timeColumn}&outFields=*&f=json`;
 };
