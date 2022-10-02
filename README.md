@@ -277,6 +277,8 @@ Providing test examples for local and deployed endpoints
 ```bash
 curl -vvv 'http://127.0.0.1:3000/?time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
 
+curl -vvv 'http://127.0.0.1:3000/?provider=arcGis&time_column=request_date&url=https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/'
+
 curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6
 ```
 
