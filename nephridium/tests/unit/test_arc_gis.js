@@ -1,6 +1,5 @@
 const chai = require('chai');
 const arcGis = require('../../arc_gis.js');
-const uiUtils = require('../../ui_utils.js');
 const app = require('../../app.js');
 
 const { expect } = chai;
@@ -67,19 +66,49 @@ describe('transform', () => {
     expect(ret[0]['SERVICE_NUMBER']).to.equal(4041371);
     expect(ret[1]['SERVICE_NUMBER']).to.equal(4041373);
   });
+});
 
-  describe('buildUrl', () => {
-    it('builds url for one week', () => {
-      const expectedDate = uiUtils.buildDate(new Date().toISOString(), 'w');
-      const params = {
-        url: 'https://a.socrata.dataset.com/resource/abcd-efgh',
-        time_range: 'w',
-        time_column: 'request_date',
-      };
+describe('buildUrl', () => {
+  it('builds url for one week', () => {
+    const expectedDate = arcGis.buildDateFilter(new Date().toISOString(), 'w');
+    const params = {
+      url: 'https://a.arcgis.dataset.com/resource/abcd-efgh',
+      time_range: 'w',
+      time_column: 'REQUEST_DATE',
+    };
 
-      const result = arcGis.buildUrl(params);
+    const result = arcGis.buildUrl(params);
 
-      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh/0/query?where=1%3D1&orderByFields=request_date&outFields=*&f=json`);
-    });
+    expect(result).to.equal(`https://a.arcgis.dataset.com/resource/abcd-efgh/0/query?where=REQUEST_DATE%20%3E%20CURRENT_TIMESTAMP%20-%20INTERVAL%20%277%27%20DAY&orderByFields=REQUEST_DATE%20DESC&outFields=*&f=json`);
   });
+
+  it('builds with additional params', () => {
+    const expectedDate = arcGis.buildDateFilter(new Date().toISOString(), 'w');
+    const params = {
+      url: 'https://a.arcgis.dataset.com/resource/abcd-efgh',
+      time_range: 'w',
+      time_column: 'REQUEST_DATE',
+      STATUS: 'Open'
+    };
+
+    const result = arcGis.buildUrl(params);
+
+    expect(result).to.equal(`https://a.arcgis.dataset.com/resource/abcd-efgh/0/query?where=REQUEST_DATE%20%3E%20CURRENT_TIMESTAMP%20-%20INTERVAL%20%277%27%20DAY+AND+STATUS%3D%27Open%27&orderByFields=REQUEST_DATE%20DESC&outFields=*&f=json`);
+  });
+});
+
+describe('buildSearchParams', () => {
+  it('handles search params', () => {
+    const params = {
+      url: 'https://a.arcgis.dataset.com/resource/abcd-efgh',
+      time_range: 'w',
+      time_column: 'REQUEST_DATE',
+      STATUS: 'Open',
+      DISTRICT_COUNCIL: 7
+    };
+
+    const result = arcGis.buildSearchParams(params);
+    expect(result).to.equal(`+AND+STATUS%3D%27Open%27+AND+DISTRICT_COUNCIL%3D%277%27`);
+  });
+
 });

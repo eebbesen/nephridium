@@ -62,13 +62,12 @@ Let's retrieve only records where you don't have to have graduated to be eligibl
 
 `https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&grad_y_n=N&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5`
 
-NOTE: Filtering is not currently available for Arc GIS endpoints.
-
 ### More!
 See the API documentation for more options, especially
 * https://dev.socrata.com/docs/filtering.html
 * https://dev.socrata.com/docs/queries/
 * https://developers.arcgis.com/rest/
+* https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm
 
 ## Host your own instance of *nephridium*
 ### Requirements
@@ -279,7 +278,7 @@ Providing test examples for local and deployed endpoints
 ```bash
 curl -vvv 'http://127.0.0.1:3000/?time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
 
-curl -vvv 'http://127.0.0.1:3000/?provider=arcGis&time_column=request_date&url=https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/'
+curl -vvv 'http://127.0.0.1:3000/?provider=arcGis&time_column=REQUEST_DATE&url=https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/'
 
 curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6
 ```

@@ -57,6 +57,7 @@ exports.lambdaHandler = async (event, _context) => {
     } else {
       const helper = this.helper(params);
       const url = helper.buildUrl(params);
+      console.log('URL', url);
       const ret = await axios(url);
       const transformedData = helper.transform(ret.data);
       const retData = this.removeAttributes(transformedData, params.to_remove);
@@ -94,21 +95,6 @@ exports.buildErrors = function (params) {
 exports.helper = function (params) {
   return params && params['provider'] && params['provider'] === 'arcGis' ? arcGis : socrata;
 }
-
-exports.buildUrl = function (params) {
-  const baseUrl = params.url;
-  const timeColumn = params.time_column;
-  const timeRange = params.time_range || null;
-
-  const dateVal = this.buildDate(new Date().toISOString(), timeRange);
-
-  let pString = '';
-  Object.keys(this.buildCustomParams(params)).forEach((key) => {
-    pString += `&${key}=${params[key]}`;
-  });
-
-  return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}&$order=${timeColumn}%20DESC`;
-};
 
 exports.buildTableData = function (data) {
   if (data == null || data.length < 1) {
