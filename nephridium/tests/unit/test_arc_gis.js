@@ -79,7 +79,7 @@ describe('transform', () => {
 
       const result = arcGis.buildUrl(params);
 
-      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh/0/query?where=1%3D1&orderByFields=REQUEST_DATE%20DESC&outFields=*&f=json`);
+      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh/0/query?where=REQUEST_DATE%20%3E%20CURRENT_TIMESTAMP%20-%20INTERVAL%20%277%27%20DAY&orderByFields=REQUEST_DATE%20DESC&outFields=*&f=json`);
     });
   });
 });

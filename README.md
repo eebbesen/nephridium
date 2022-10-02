@@ -62,8 +62,6 @@ Let's retrieve only records where you don't have to have graduated to be eligibl
 
 `https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&grad_y_n=N&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5`
 
-NOTE: Date filtering is not currently available for Arc GIS endpoints -- all records are returned.
-
 ### More!
 See the API documentation for more options, especially
 * https://dev.socrata.com/docs/filtering.html

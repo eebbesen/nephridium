@@ -16,7 +16,12 @@ exports.buildUrl = function (params) {
   const timeRange = params['time_range'] || null;
   const pString = uiUtils.stringifyParams(params);
 
-  const dateVal = uiUtils.buildDate(new Date().toISOString(), timeRange);
+  const dateFilter = this.buildDateFilter(timeColumn, timeRange);
 
-  return `${baseUrl}/0/query?where=${DEFAULT_WHERE}${pString}&orderByFields=${timeColumn}%20DESC&outFields=*&f=json`;
+  return `${baseUrl}/0/query?where=${dateFilter}${pString}&orderByFields=${timeColumn}%20DESC&outFields=*&f=json`;
+};
+
+exports.buildDateFilter = function(timeColumn, timeRange) {
+  const lookback = (timeRange && timeRange === 'w') ? 7 : 30;
+  return `${timeColumn}%20%3E%20CURRENT_TIMESTAMP%20-%20INTERVAL%20%27${lookback}%27%20DAY`;
 };
