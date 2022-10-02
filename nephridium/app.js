@@ -130,7 +130,7 @@ exports.buildFiltersDisplay = function (params) {
   return filter;
 };
 
-exports.html = function (data, socrataUrl, params, datasetUrl) {
+exports.html = function (data, dataUrl, params, datasetUrl) {
   return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
@@ -149,7 +149,7 @@ exports.html = function (data, socrataUrl, params, datasetUrl) {
 
   <div id="buttons">
     <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
-    <button id="downloadJSON" type="button" onclick="location.href='${socrataUrl}'">Raw JSON from Socrata</button>
+    <button id="downloadJSON" type="button" onclick="location.href='${dataUrl}'">Raw JSON</button>
     <button id="toggleFilters" type="button" onclick="toggleFilterDisplay()">Show Filters</button>
   </div>
   ${this.buildFiltersDisplay(params)}
