@@ -397,6 +397,20 @@ describe('Tests index', () => {
       const result = app.transformData(data)[0];
       expect(result.location).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>');
     });
+
+    it('changes timestamp into date', () => {
+      const data = [{
+        name_one: '2018-10-01T00:00:00.000',
+        a: '2018-10-01T00:00:01.000',
+        b: 2,
+        c_you_later: '3',
+        d: '7T989',
+        e: 1663891200000
+      }];
+
+      const result = app.transformData(data)[0];
+      expect(result.e).to.equal(new Date(1663891200000).toISOString().slice(0,10));
+    });
   });
 
   describe('html', () => {
