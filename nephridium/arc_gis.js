@@ -1,5 +1,5 @@
 const uiUtils = require('./ui_utils.js');
-const DEFAULT_WHERE = `1%3D1`;
+// const DEFAULT_WHERE = `1%3D1`; use if there's no date portion or filter as query is required
 
 exports.transform = function (json) {
   const data = [];

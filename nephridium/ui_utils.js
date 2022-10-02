@@ -1,6 +1,3 @@
-// const dayMs = 86400000;
-const weekMs = 604800000;
-const thirtyDayMs = 2592000000;
 const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title'];
 
 
@@ -22,16 +19,4 @@ exports.stringifyParams = function (params) {
   });
 
   return pString;
-};
-
-exports.buildDate = function (date, range) {
-  const initDate = new Date(`${this.normalizeDate(date)}T00:00:00.000`);
-  const modifier = range === 'w' ? weekMs : (2 * thirtyDayMs);
-  const endDate = new Date(initDate - modifier);
-
-  return this.normalizeDate(endDate.toISOString());
-};
-
-exports.normalizeDate = function (date) {
-  return date.substring(0, 10);
 };

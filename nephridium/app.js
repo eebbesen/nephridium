@@ -95,21 +95,6 @@ exports.helper = function (params) {
   return params && params['provider'] && params['provider'] === 'arcGis' ? arcGis : socrata;
 }
 
-exports.buildUrl = function (params) {
-  const baseUrl = params.url;
-  const timeColumn = params.time_column;
-  const timeRange = params.time_range || null;
-
-  const dateVal = this.buildDate(new Date().toISOString(), timeRange);
-
-  let pString = '';
-  Object.keys(this.buildCustomParams(params)).forEach((key) => {
-    pString += `&${key}=${params[key]}`;
-  });
-
-  return `${baseUrl}.json?$where=${timeColumn}%3E%27${dateVal}%27${pString}&$order=${timeColumn}%20DESC`;
-};
-
 exports.buildTableData = function (data) {
   if (data == null || data.length < 1) {
     return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
