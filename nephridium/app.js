@@ -201,10 +201,17 @@ exports.removeAttributes = function (data, toRemove) {
 exports.transformData = function (data) {
   data.forEach((row) => {
     Object.keys(row).forEach((k) => {
+      if (typeof row[k] === 'number') {
+        if (row[k].toString().length === 13) {
+          row[k] = new Date(row[k]).toISOString();
+        }
+      }
+
       if (typeof row[k] === 'string') {
-        row[k] = row[k].replace('T00:00:00.000', '');
+        row[k] = row[k].replace(/T00:00:00.000Z?/, '');
         if (row[k].match(/\dT\d/) && row[k].endsWith('.000')) {
-          row[k] = row[k].replace('.000', '').replace('T', ' ');
+          row[k] = row[k].replace(/\.000Z?/, '')
+          row[k] = row[k].replace('T', ' ');
         }
 
         if (k == ('location')) {
