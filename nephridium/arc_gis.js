@@ -14,11 +14,10 @@ exports.buildUrl = function (params) {
   const baseUrl = params.url;
   const timeColumn = params['time_column'];
   const timeRange = params['time_range'] || null;
-  const pString = uiUtils.stringifyParams(params);
-
   const dateFilter = this.buildDateFilter(timeColumn, timeRange);
+  const otherSearchParams = this.buildSearchParams(params);
 
-  return `${baseUrl}/0/query?where=${dateFilter}${pString}&orderByFields=${timeColumn}%20DESC&outFields=*&f=json`;
+  return `${baseUrl}/0/query?where=${dateFilter}${otherSearchParams}&orderByFields=${timeColumn}%20DESC&outFields=*&f=json`;
 };
 
 exports.buildDateFilter = function(timeColumn, timeRange) {

@@ -286,7 +286,7 @@ describe('Tests index', () => {
       event.queryStringParameters = {
         url: 'https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/',
         time_column: 'request_date',
-        status: 'Open',
+        STATUS: 'Resolved',
         provider: 'arcGis'
       };
 
