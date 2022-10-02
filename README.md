@@ -49,7 +49,7 @@ If we want to further filter the dataset we can do that, too.
 Set `display_title` to a encoded URL string. This means you need to use `+` or `%20` to represent spaces. See [this page](https://www.w3schools.com/tags/ref_urlencode.asp) for more encoding mappings.
 
 ### Excluding columns
-In our example, let's say we don't want to see the county column. We'll add a `to_remove` parameter for that.
+In our example, let's say we don't want to see the county column. We'll add a `to_remove` parameter for that. Note that this is case sensitive -- you must use the same case in `to_remove` as the underlying JSON.
 
 `https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&to_remove=county&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5`
 
