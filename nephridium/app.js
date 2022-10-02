@@ -57,6 +57,7 @@ exports.lambdaHandler = async (event, _context) => {
     } else {
       const helper = this.helper(params);
       const url = helper.buildUrl(params);
+      console.log('URL', url);
       const ret = await axios(url);
       const transformedData = helper.transform(ret.data);
       const retData = this.removeAttributes(transformedData, params.to_remove);

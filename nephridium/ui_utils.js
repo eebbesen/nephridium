@@ -1,4 +1,4 @@
-const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title'];
+const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title', 'provider'];
 
 
 // removes some params for all calls, plus any keys in the to_remove parameter
