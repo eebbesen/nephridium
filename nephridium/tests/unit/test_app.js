@@ -99,7 +99,8 @@ describe('getFilterParams', () => {
       display_title: 'This+is+a+display+title',
       time_column: 'request_date',
       to_remove: 'count,map_location_address,map_location_city,map_location_state,ward,map_location_zip,map_location,district_council,see_click_fix_website_submission',
-      url: 'https://information.stpaul.gov/resource/qtkm-psvs',
+      provider: 'arcGis',
+      url: 'https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/',
     };
 
     const result = app.getFilterParams(params);
@@ -162,6 +163,52 @@ describe('Tests index', () => {
       expect(result.length).to.equal(2);
       expect(result[0].ward).to.equal('1');
       expect(typeof result[0].count).to.equal('undefined');
+      expect(typeof data[0].count).to.equal('string');
+    });
+
+    it('removes stuff case sensitive', () => {
+      const data = [
+        {
+          service_number: '4753267',
+          request_date: '2019-07-22T00:00:00.000',
+          location: '633 CAPITOL BLVD',
+          ward: '1',
+          district_council: '7',
+          status: 'Open',
+          request_type: 'Complaint',
+          request_description: 'Shut Off',
+          see_click_fix_website_submission: 'No',
+          map_location: { type: 'Point', coordinates: [Array] },
+          count: '1',
+          map_location_address: '',
+          map_location_city: '',
+          map_location_state: '',
+          map_location_zip: '',
+        },
+        {
+          service_number: '4753210',
+          request_date: '2019-07-22T00:00:00.000',
+          location: '1921 ST ANTHONY AVE',
+          ward: '4',
+          district_council: '13',
+          status: 'Under Review',
+          request_type: 'Complaint',
+          request_description: 'Certificate of Occupancy',
+          see_click_fix_website_submission: 'No',
+          map_location: { type: 'Point', coordinates: [Array] },
+          count: '1',
+          map_location_address: '',
+          map_location_city: '',
+          map_location_state: '',
+          map_location_zip: '',
+        },
+      ];
+
+      const result = app.removeAttributes(data, 'COUNT,MAP_location');
+
+      expect(result.length).to.equal(2);
+      expect(result[0].ward).to.equal('1');
+      expect(typeof result[0].count).to.equal('string');
       expect(typeof data[0].count).to.equal('string');
     });
 
