@@ -18,5 +18,5 @@ exports.buildUrl = function (params) {
 
   const dateVal = uiUtils.buildDate(new Date().toISOString(), timeRange);
 
-  return `${baseUrl}/0/query?where=${DEFAULT_WHERE}${pString}&orderByFields=${timeColumn}&outFields=*&f=json`;
+  return `${baseUrl}/0/query?where=${DEFAULT_WHERE}${pString}&orderByFields=${timeColumn}%20DESC&outFields=*&f=json`;
 };

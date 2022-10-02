@@ -74,12 +74,12 @@ describe('transform', () => {
       const params = {
         url: 'https://a.socrata.dataset.com/resource/abcd-efgh',
         time_range: 'w',
-        time_column: 'request_date',
+        time_column: 'REQUEST_DATE',
       };
 
       const result = arcGis.buildUrl(params);
 
-      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh/0/query?where=1%3D1&orderByFields=request_date&outFields=*&f=json`);
+      expect(result).to.equal(`https://a.socrata.dataset.com/resource/abcd-efgh/0/query?where=1%3D1&orderByFields=REQUEST_DATE%20DESC&outFields=*&f=json`);
     });
   });
 });
