@@ -1,12 +1,10 @@
 const axios = require('axios');
 const json2html = require('node-json2html');
-const fs = require('fs');
-const path = require('path');
 
 const socrata = require('./socrata.js');
 const arcGis = require('./arc_gis.js');
-
-const releaseVersion = require('./package.json').version;
+const uiUtils = require('./ui_utils.js');
+const dataUtils = require('./data_utils.js');
 
 /**
  *
@@ -61,9 +59,9 @@ exports.lambdaHandler = async (event, _context) => {
       const ret = await axios(url);
       const transformedData = helper.transform(ret.data);
       const retData = this.removeAttributes(transformedData, params.to_remove);
-      const modData = this.transformData(retData, helper);
+      const modData = dataUtils.transformData(retData, helper);
       const filterParams = this.getFilterParams(params);
-      const web = this.html(modData, url, filterParams, params.url);
+      const web = uiUtils.html(modData, url, filterParams, params.url);
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
@@ -96,80 +94,6 @@ exports.helper = function (params) {
   return params && params['provider'] && params['provider'] === 'arcGis' ? arcGis : socrata;
 }
 
-exports.buildTableData = function (data) {
-  if (data == null || data.length < 1) {
-    return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
-  }
-
-  const keys = Object.keys(data[0]);
-  const tableHead = keys.map(k => `<th>${k.replace(/_/g," ")}</th>`).join('');
-  const tableData = keys.map(k => `<td>\${${k}}</td>`).join('');
-  const bodyDataTemplate = { '<>': 'tr', html: tableData };
-
-  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.transform(data, bodyDataTemplate)}</tbody></table></div>`;
-};
-
-exports.buildFiltersDisplay = function (params) {
-  let filter = '';
-  if (params) {
-    delete params.display_title;
-
-    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
-    let fss = '';
-    fs.forEach(f => fss += f);
-    filter = `
-<div id="filters" style="display:none">
-  <h2>Filters</h2>
-  <ul>
-    ${fss}
-  </ul>
-</div>
-`;
-  }
-
-  return filter;
-};
-
-exports.html = function (data, dataUrl, params, datasetUrl) {
-  return Object.freeze(`
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-  <style>${this.css()}</style>
-  <title>Nephridium-powered page</title>
-  <link rel="shortcut icon" href="#" />
-  <link rel="shortcut icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Filter_font_awesome.svg/32px-Filter_font_awesome.svg.png"/>
-</head>
-<body>
-  <div id="description">
-    <h1>
-      <a href="${datasetUrl}">${this.getDisplayTitle(params)}</a>
-    </h1>
-  </div>
-
-  <div id="buttons">
-    <button id="downloadCSV" type="button" onclick="exportTableToCSV('data.csv')">Download this data for a spreadsheet</button>
-    <button id="downloadJSON" type="button" onclick="location.href='${dataUrl}'">Raw JSON</button>
-    <button id="toggleFilters" type="button" onclick="toggleFilterDisplay()">Show Filters</button>
-  </div>
-  ${this.buildFiltersDisplay(params)}
-  <div>${this.buildTableData(data)}</div>
-  <div id="footer">
-    <div class="footerElement" id="footerElementLeft">nephridium version: ${releaseVersion}</div><div id="footerElementRight" class="footerElement">Get the source code <a id="github" class="footerElement" href="https://github.com/eebbesen/nephridium">here</a></div>
-  </div>
-  ${this.javascript()}
-</body>
-</html>`);
-};
-
-exports.getDisplayTitle = function (params) {
-  if (params && params.display_title && params.display_title.length > 0) {
-    return params.display_title;
-  }
-
-  return '';
-};
-
 // return object with only query filter params
 exports.getFilterParams = function (params) {
   const p = Object.assign({}, params);
@@ -194,50 +118,4 @@ exports.removeAttributes = function (data, toRemove) {
   }
 
   return d;
-};
-
-// strip time from dates that don't have non-zero time
-// todo: refactor to be functional and take in a list of functions to do the transforamtions
-exports.transformData = function (data) {
-  data.forEach((row) => {
-    Object.keys(row).forEach((k) => {
-      if (typeof row[k] === 'number') {
-        if (row[k].toString().length === 13) {
-          row[k] = new Date(row[k]).toISOString();
-        }
-      }
-
-      if (typeof row[k] === 'string') {
-        row[k] = row[k].replace(/T00:00:00.000Z?/, '');
-        if (row[k].match(/\dT\d/) && row[k].endsWith('.000')) {
-          row[k] = row[k].replace(/\.000Z?/, '')
-          row[k] = row[k].replace('T', ' ');
-        }
-
-        if (k == ('location')) {
-          row[k] = this.mapIt(row[k]);
-        }
-      }
-    });
-  });
-
-  return data;
-};
-
-exports.css = function () {
-  return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8');
-};
-
-exports.javascript = function () {
-  return Object.freeze(`
-  <script type="text/javascript">
-    ${fs.readFileSync(path.resolve(__dirname, './assets/nephridium.js'), 'utf8')}
-  </script>`);
-};
-
-// expects lat/long only
-exports.mapIt = function (address) {
-  const URL = 'https://www.google.com/maps/place/';
-  const POST = '%20Saint+Paul,+MN';
-  return `<a href="${URL + encodeURIComponent(address) + POST}">${address}</a>`;
 };
