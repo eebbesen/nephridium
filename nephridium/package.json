@@ -1,6 +1,6 @@
 {
   "name": "nephridium",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "An AWS Serverless Appliction that produces filtered Socrata and Arc GIS datasets",
   "main": "src/app.js",
   "repository": "https://github.com/eebbesen/nephridium",
