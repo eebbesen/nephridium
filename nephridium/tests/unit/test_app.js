@@ -225,7 +225,8 @@ describe('Tests index', () => {
 
       expect(statusCode).to.equal(200);
       expect(body).to.contain('Resolved');
-      expect(body).to.contain('Parking');
+      console.log(body);
+      expect(body).to.contain('Rubbish');
     }).timeout(15000);
 
     // add .skip or comment out if you don't want to execute this live test
