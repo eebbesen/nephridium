@@ -197,16 +197,16 @@ describe('Tests index', () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
       const event = {};
       event.queryStringParameters = {
-        url: 'https://data.ramseycounty.us/resource/2yt3-vdb6',
-        time_column: 'date',
-        status: 'Open'
+        url: 'https://opendata.ramseycounty.us/resource/yr93-yzfb',
+        time_column: 'createddate',
+        createdby: 'PublicViewer'
       };
 
       const response = await app.lambdaHandler(event, null);
       const { body, statusCode } = response;
 
       expect(statusCode).to.equal(200);
-      expect(body).to.contain('beach');
+      expect(body).to.contain('facilitytype');
     }).timeout(15000);
 
     // add .skip or comment out if you don't want to execute this live test
@@ -225,7 +225,6 @@ describe('Tests index', () => {
 
       expect(statusCode).to.equal(200);
       expect(body).to.contain('Resolved');
-      console.log(body);
       expect(body).to.contain('Rubbish');
     }).timeout(15000);
 

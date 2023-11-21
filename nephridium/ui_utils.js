@@ -20,7 +20,8 @@ exports.buildCustomParams = function (params) {
 exports.stringifyParams = function (params) {
   let pString = '';
   Object.keys(this.buildCustomParams(params)).forEach((key) => {
-    pString += `&${key}=${params[key]}`;
+    const token = typeof params[key] === 'number' ? '' : '%27';
+    pString += `&${key}=${token}${params[key]}${token}`;
   });
 
   return pString;
