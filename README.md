@@ -16,7 +16,7 @@ A [Saint Paul District Council](https://www.stpaul.gov/residents/live-saint-paul
 Saint Paul provides [the data](https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json), but only in a way where the Executive Director has to enter filter information every single time she visits the site.
 
 #### A one-click solution...
-Since *nephridium* uses a look-back date filter, one URL will work in perpetuity. For example, `https://your_aws_url/?district_council=8&time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6` will produce the previous 7 days' results for service requests in District 8.
+Since *nephridium* uses a look-back date filter, one URL will work in perpetuity. For example, [https://your_aws_url/?district_council=8&time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6](https://your_aws_url/?district_council=8&time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6) will produce the previous 7 days' results for service requests in District 8.
 
 #### ...that can become a no-click solution
 Once an URL is created it can be used with [IFTTT](https://ifttt.com), [Zapier](https://zapier.com/), [cron](https://en.wikipedia.org/wiki/Cron) or any other automation tool to scheule sending of an email with the requested data. Or cause an email to be sent when new data is found.
@@ -39,7 +39,7 @@ For an example we'll use
 
 to build our minimal URL (must include a `time_column` and a `url`)
 
-`https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5`
+[https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5](https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5)
 
 Make sure DATASET_URL is last!
 
@@ -51,16 +51,16 @@ Set `display_title` to a encoded URL string. This means you need to use `+` or `
 ### Excluding columns
 In our example, let's say we don't want to see the county column. We'll add a `to_remove` parameter for that. Note that this is case sensitive -- you must use the same case in `to_remove` as the underlying JSON.
 
-`https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&to_remove=county&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5`
+[https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&to_remove=county&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5](https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&to_remove=county&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5)
 
 And if we want to remove more than one column, we just separate them with a comma (no spaces!). Let's also remove the column that shows whether there's a GPA requirement.
 
-`https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&to_remove=county,gpa_req_y_n&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5`
+[https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&to_remove=county,gpa_req_y_n&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5](https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&to_remove=county,gpa_req_y_n&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5)
 
 ### Filtering data
 Let's retrieve only records where you don't have to have graduated to be eligible. We do this by specifying the column name (`grad_y_n`) and a value in the URL.
 
-`https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&grad_y_n=N&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5`
+[https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&grad_y_n=N&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5](https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=deadline_date&grad_y_n=N&url=https://dev.socrata.com/foundry/data.michigan.gov/kkup-j7i5)
 
 ### More!
 See the API documentation for more options, especially
@@ -108,7 +108,7 @@ sam local start-api --region us-east-1
 ```
 
 And test by loading nephridium with data
-http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=geocoded_column,upload_date,sampling_site_id&url=https://data.ramseycounty.us/resource/2yt3-vdb6
+[http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=geocoded_column,upload_date,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6](http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=geocoded_column,upload_date,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6)
 
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function. Note that CloudFront (but not your local api) returns a 403 when it receives a GET with a body, so you must use query parameters instead.
@@ -125,14 +125,14 @@ event_file.json
 {
     "queryStringParameters": {
         "time_column": "date",
-        "url": "https://data.ramseycounty.us/resource/2yt3-vdb6.json"
+        "url": "https://opendata.ramseycounty.us/resource/2yt3-vdb6.json"
     }
 }
 ```
 
 
 ```bash
-echo '{"queryStringParameters": {"time_column": "date", "url": "https://data.ramseycounty.us/resource/2yt3-vdb6.json"}}'  | sam local invoke ReportFunction --region us-east-1
+echo '{"queryStringParameters": {"time_column": "date", "url": "https://opendata.ramseycounty.us/resource/2yt3-vdb6.json"}}'  | sam local invoke ReportFunction --region us-east-1
 ```
 
 ### Packaging and deployment
@@ -274,26 +274,26 @@ Providing test examples for local and deployed endpoints
 
 ### Bare minimum -- `time_column` and `url`
 ```bash
-curl -vvv 'http://127.0.0.1:3000/?time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
+curl -vvv 'http://127.0.0.1:3000/?time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
 
 curl -vvv 'http://127.0.0.1:3000/?provider=arcGis&time_column=REQUEST_DATE&url=https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/'
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6
+curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6
 ```
 
 ### Custom parameters in query
 ```bash
-curl -vvv 'http://127.0.0.1:3000/?status=Open&time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
+curl -vvv 'http://127.0.0.1:3000/?status=Open&time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
+curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
 ```
 
 ### Custom parameters in query with filtered attributes
 ```bash
-curl -vvv -X GET 'http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
+curl -vvv -X GET 'http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://data.ramseycounty.us/resource/2yt3-vdb6'
+curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
 ```
 
 ## Accessibility testing
-http://wave.webaim.org/report#/https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://data.ramseycounty.us/resource/2yt3-vdb6
+[http://wave.webaim.org/report#/https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6](http://wave.webaim.org/report#/https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6)
