@@ -109,7 +109,7 @@ sam local start-api --region us-east-1
 
 And test by loading nephridium with data
 http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=geocoded_column,upload_date,sampling_site_id&url=https://data.ramseycounty.us/resource/2yt3-vdb6
-```
+
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function. Note that CloudFront (but not your local api) returns a 403 when it receives a GET with a body, so you must use query parameters instead.
 
@@ -233,8 +233,6 @@ npm run lint -- --fix
 AWS CLI commands to package, deploy and describe outputs defined within the cloudformation stack:
 ```bash
 sam deploy
-```
-
 ```
 
 ```bash
