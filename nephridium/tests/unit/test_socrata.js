@@ -21,7 +21,7 @@ describe('buildUrl', () => {
 
     const result = socrata.buildUrl(params);
 
-    expect(result).to.equal(`${params['url']}.json?$where=REQUEST_DATE%3E%27${expectedDate}%27&some_param=xyz&$order=REQUEST_DATE%20DESC`);
+    expect(result).to.equal(`${params['url']}.json?$where=REQUEST_DATE%3E%27${expectedDate}%27&some_param=%27xyz%27&$order=REQUEST_DATE%20DESC`);
   });
 });
 
