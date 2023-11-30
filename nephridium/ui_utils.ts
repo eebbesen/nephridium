@@ -1,24 +1,26 @@
-const fs = require('fs')
-const path = require('path')
+import * as json2html from 'node-json2html'
+import * as fs from 'fs'
+import * as path from 'path'
 
-const releaseVersion = require('./package.json').version
+const releaseVersion = process.env.npm_package_version
 
 const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title', 'provider']
 
 // removes some params for all calls, plus any keys in the to_remove parameter
-exports.buildCustomParams = function (params) {
-  const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',')
-  const rem = customNo.filter((key) => { !params[key] })
+export function buildCustomParams (params: { [x: string]: any, to_remove: any }): object {
+  const customNo = ((params.to_remove.length > 0) ? `,${params.to_remove}` : '').split(',')
+  const rem = customNo.filter((key) => { return (params[key]).length > 0 })
 
   const data = { ...params }
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   paramsToRemove.concat(rem).forEach((k) => { delete data[k] })
 
   return data
 }
 
-exports.stringifyParams = function (params) {
+export function stringifyParams (params: { [x: string]: any, to_remove: any }): string {
   let pString = ''
-  Object.keys(this.buildCustomParams(params)).forEach((key) => {
+  Object.keys(buildCustomParams(params)).forEach((key) => {
     const token = typeof params[key] === 'number' ? '' : '%27'
     pString += `&${key}=${token}${params[key]}${token}`
   })
@@ -26,18 +28,18 @@ exports.stringifyParams = function (params) {
   return pString
 }
 
-exports.css = function () {
+export function css (): string {
   return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8')
 }
 
-exports.javascript = function () {
+export function javascript (): string {
   return Object.freeze(`
   <script type="text/javascript">
     ${fs.readFileSync(path.resolve(__dirname, './assets/nephridium.js'), 'utf8')}
   </script>`)
 }
 
-exports.buildTableData = function (data) {
+export function buildTableData (data: string | any[] | null): string {
   if (data == null || data.length < 1) {
     return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>'
   }
@@ -47,17 +49,17 @@ exports.buildTableData = function (data) {
   const tableData = keys.map((k) => `<td>\${${k}}</td>`).join('')
   const bodyDataTemplate = { '<>': 'tr', html: tableData }
 
-  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.transform(data, bodyDataTemplate)}</tbody></table></div>`
+  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.render(data, bodyDataTemplate)}</tbody></table></div>`
 }
 
-exports.buildFiltersDisplay = function (params) {
+export function buildFiltersDisplay (params: { [x: string]: any, display_title?: any }): string {
   let filter = ''
-  if (params) {
+  if (params !== null) {
     delete params.display_title
 
     const fs = Object.keys(params).map((k) => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`)
     let fss = ''
-    fs.forEach((f) => fss += f)
+    fs.forEach((f) => { fss += f })
     filter = `
 <div id="filters" style="display:none">
   <h2>Filters</h2>
@@ -71,7 +73,7 @@ exports.buildFiltersDisplay = function (params) {
   return filter
 }
 
-exports.html = function (data, dataUrl, params, datasetUrl) {
+export function html (this: any, data: any, dataUrl: any, params: any, datasetUrl: any): string {
   return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
@@ -103,8 +105,8 @@ exports.html = function (data, dataUrl, params, datasetUrl) {
 </html>`)
 }
 
-exports.getDisplayTitle = function (params) {
-  if (params?.display_title && params.display_title.length > 0) {
+export function getDisplayTitle (params: { display_title: string | any[] }): string | any[] {
+  if (params?.display_title.length > 0 && params.display_title.length > 0) {
     return params.display_title
   }
 

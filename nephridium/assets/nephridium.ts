@@ -1,11 +1,11 @@
 // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-function exportTableToCSV (filename) {
+export function exportTableToCSV (filename: any): void {
   const csv = []
   const rows = document.querySelectorAll('table tr')
 
   for (let i = 0; i < rows.length; i++) {
     const row = []; const
-      cols = rows[i].querySelectorAll('td, th')
+      cols: NodeListOf<HTMLElement> = rows[i].querySelectorAll('td, th')
 
     for (let j = 0; j < cols.length; j++) {
       row.push(cols[j].innerText)
@@ -18,7 +18,7 @@ function exportTableToCSV (filename) {
 }
 
 // from https://www.codexworld.com/export-html-table-data-to-csv-using-javascript/
-function downloadCSV (csv, filename) {
+function downloadCSV (csv: BlobPart, filename: string): void {
   const csvFile = new Blob([csv], { type: 'text/csv' })
   const downloadLink = document.createElement('a')
   downloadLink.download = filename
@@ -29,13 +29,19 @@ function downloadCSV (csv, filename) {
   downloadLink.click()
 }
 
-function toggleFilterDisplay () {
-  const style = document.getElementById('filters').style.display
-  if (style && style == 'block') {
-    document.getElementById('filters').style.display = 'none'
-    const b = document.getElementById('toggleFilters').innerText = 'Show Filters'
-  } else {
-    document.getElementById('filters').style.display = 'block'
-    const b = document.getElementById('toggleFilters').innerText = 'Hide Filters'
+export function toggleFilterDisplay (): void {
+  const style: CSSStyleDeclaration | undefined = document?.getElementById('filters')?.style
+  const filter: HTMLElement | null = document?.getElementById('toggleFilters')
+
+  if (style != null && style.getPropertyValue('display') === 'block') {
+    style.setProperty('display', 'none')
+    if (filter !== null) {
+      filter.innerText = 'Show Filters'
+    }
+  } else if (style != null) {
+    style.setProperty('display', 'block')
+    if (filter !== null) {
+      filter.innerText = 'Hide Filters'
+    }
   }
 }

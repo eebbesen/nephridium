@@ -1,12 +1,12 @@
-exports.transformDate = function (date) {
+export function transformDate (date: string | number | Date | null): Date | null {
   if (date === null) return null
   return new Date(date)
 }
 
 // strip time from dates that don't have non-zero time
 // todo: refactor to be functional and take in a list of functions to do the transforamtions
-exports.transformData = function (data) {
-  data.forEach((row) => {
+export function transformData (data: any[]): any[] {
+  data.forEach((row: Record<string, any>) => {
     Object.keys(row).forEach((k) => {
       if (typeof row[k] === 'number') {
         if (row[k].toString().length === 13) {
@@ -16,13 +16,13 @@ exports.transformData = function (data) {
 
       if (typeof row[k] === 'string') {
         row[k] = row[k].replace(/T00:00:00.000Z?/, '')
-        if (row[k].match(/\dT\d/) && row[k].endsWith('.000')) {
+        if ((Boolean(row[k].match(/\dT\d/))) && (Boolean(row[k].endsWith('.000')))) {
           row[k] = row[k].replace(/\.000Z?/, '')
           row[k] = row[k].replace('T', ' ')
         }
 
-        if (k == ('location')) {
-          row[k] = this.mapIt(row[k])
+        if (k === ('location')) {
+          row[k] = mapIt(row[k])
         }
       }
     })
@@ -32,7 +32,7 @@ exports.transformData = function (data) {
 }
 
 // expects lat/long only
-exports.mapIt = function (address) {
+export function mapIt (address: string | number | boolean): string {
   const URL = 'https://www.google.com/maps/place/'
   const POST = '%20Saint+Paul,+MN'
   return `<a href="${URL + encodeURIComponent(address) + POST}">${address}</a>`

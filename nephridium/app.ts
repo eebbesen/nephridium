@@ -1,10 +1,9 @@
-const axios = require('axios')
-const json2html = require('node-json2html')
+import axios from 'axios'
 
-const socrata = require('./socrata.js')
-const arcGis = require('./arc_gis.js')
-const uiUtils = require('./ui_utils.js')
-const dataUtils = require('./data_utils.js')
+import * as socrata from './socrata'
+import * as arcGis from './arc_gis'
+import { html } from './ui_utils'
+import * as DataUtils from './data_utils'
 
 /**
  *
@@ -40,7 +39,7 @@ const dataUtils = require('./data_utils.js')
  * @returns {Object} object.body - JSON Payload to be returned
  *
  */
-exports.lambdaHandler = async (event, _context) => {
+export async function lambdaHandler (this: any, event: { queryStringParameters: any }, _context: any): Promise<any> {
   let response
   try {
     const params = event.queryStringParameters
@@ -53,22 +52,22 @@ exports.lambdaHandler = async (event, _context) => {
         body: JSON.stringify({ message: errors })
       }
     } else {
-      const helper = this.helper(params)
-      const url = helper.buildUrl(params)
+      const help = helper(params)
+      const url = help.buildUrl(params)
       console.log('URL', url)
       const ret = await axios(url)
-      const transformedData = helper.transform(ret.data)
+      const transformedData = help.transform(ret.data)
       const retData = this.removeAttributes(transformedData, params.to_remove)
-      const modData = dataUtils.transformData(retData, helper)
+      const modData = DataUtils.transformData(retData) // , helper)
       const filterParams = this.getFilterParams(params)
-      const web = uiUtils.html(modData, url, filterParams, params.url)
+      const web = html(modData, url, filterParams, params.url)
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
         body: web
       }
     }
-  } catch (err) {
+  } catch (err: any) {
     console.log(err)
     return err
   }
@@ -76,7 +75,7 @@ exports.lambdaHandler = async (event, _context) => {
   return response
 }
 
-exports.buildErrors = function (params) {
+export function buildErrors (params: { time_column: any, url: any }): any {
   let response = ''
   if (typeof params.time_column === 'undefined') {
     response += 'You must supply a time_column parameter.'
@@ -90,12 +89,12 @@ exports.buildErrors = function (params) {
 }
 
 // arcGis or Socrata
-exports.helper = function (params) {
-  return params?.provider && params.provider === 'arcGis' ? arcGis : socrata
+export function helper (params: { provider: string }): any {
+  return ((params?.provider).length > 0) && params.provider === 'arcGis' ? arcGis : socrata
 }
 
 // return object with only query filter params
-exports.getFilterParams = function (params) {
+export function getFilterParams (params: any): any {
   const p = { ...params }
 
   delete p.to_remove
@@ -106,12 +105,13 @@ exports.getFilterParams = function (params) {
   return p
 }
 
-exports.removeAttributes = function (data, toRemove) {
+export function removeAttributes (data: any, toRemove: string): any {
   const d = JSON.parse(JSON.stringify(data))
-  if (toRemove) {
+  if (toRemove.length > 0) {
     const tr = toRemove.split(',')
-    d.forEach((row) => {
-      tr.forEach((rm) => {
+    d.forEach((row: Record<string, any>) => {
+      tr.forEach((rm: string | number) => {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete row[rm]
       })
     })

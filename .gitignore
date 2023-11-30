@@ -135,5 +135,7 @@ samconfig.toml
 
 local_snippets.txt
 notes.md
+dist
+
 
 # End of https://www.gitignore.io/api/osx,node,linux,windows

@@ -11,7 +11,7 @@
     "node-json2html": ">=2.1.0"
   },
   "scripts": {
-    "test": "nyc -x '**/tests/**' mocha tests/unit/",
+    "test": "nyc -x '**/tests/**/*.ts' mocha tests/unit/*.ts",
     "test_report": "nyc -x '**/tests/**' mocha tests/unit/ --reporter mochawesome",
     "lint": "node_modules/eslint/bin/eslint.js .",
     "lintfix": "node_modules/eslint/bin/eslint.js . --fix"
@@ -20,6 +20,8 @@
     "node": ">=18.18.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
     "chai": ">=4.2.0",
     "eslint": ">=5.16.0",
     "eslint-config-airbnb-base": ">=13.2.0",
