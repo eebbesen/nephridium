@@ -3,8 +3,8 @@ const uiUtils = require('./ui_utils.js');
 
 exports.transform = function (json) {
   const data = [];
-  json["features"].forEach((record) => {
-    data.push(record["attributes"]);
+  json.features.forEach((record) => {
+    data.push(record.attributes);
   });
 
   return data;
@@ -12,15 +12,15 @@ exports.transform = function (json) {
 
 exports.buildUrl = function (params) {
   const baseUrl = params.url;
-  const timeColumn = params['time_column'];
-  const timeRange = params['time_range'] || null;
+  const timeColumn = params.time_column;
+  const timeRange = params.time_range || null;
   const dateFilter = this.buildDateFilter(timeColumn, timeRange);
   const otherSearchParams = this.buildSearchParams(params);
 
   return `${baseUrl}/0/query?where=${dateFilter}${otherSearchParams}&orderByFields=${timeColumn}%20DESC&outFields=*&f=json`;
 };
 
-exports.buildDateFilter = function(timeColumn, timeRange) {
+exports.buildDateFilter = function (timeColumn, timeRange) {
   const lookback = (timeRange && timeRange === 'w') ? 7 : 30;
   return `${timeColumn}%20%3E%20CURRENT_TIMESTAMP%20-%20INTERVAL%20%27${lookback}%27%20DAY`;
 };
@@ -29,9 +29,9 @@ exports.buildDateFilter = function(timeColumn, timeRange) {
 exports.buildSearchParams = function (params) {
   const filteredParams = uiUtils.buildCustomParams(params);
   let filterString = '';
-  Object.entries(filteredParams).forEach( ([k, v]) =>  {
+  Object.entries(filteredParams).forEach(([k, v]) => {
     filterString += `+AND+${k}%3D%27${v}%27`;
-  })
+  });
 
   return filterString;
 };

@@ -91,12 +91,12 @@ exports.buildErrors = function (params) {
 
 // arcGis or Socrata
 exports.helper = function (params) {
-  return params && params['provider'] && params['provider'] === 'arcGis' ? arcGis : socrata;
-}
+  return params && params.provider && params.provider === 'arcGis' ? arcGis : socrata;
+};
 
 // return object with only query filter params
 exports.getFilterParams = function (params) {
-  const p = Object.assign({}, params);
+  const p = { ...params };
 
   delete p.to_remove;
   delete p.time_column;

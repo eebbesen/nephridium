@@ -5,13 +5,12 @@ const releaseVersion = require('./package.json').version;
 
 const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title', 'provider'];
 
-
 // removes some params for all calls, plus any keys in the to_remove parameter
 exports.buildCustomParams = function (params) {
   const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',');
   const rem = customNo.filter((key) => { !params[key]; });
 
-  const data = Object.assign({}, params);
+  const data = { ...params };
   paramsToRemove.concat(rem).forEach((k) => { delete data[k]; });
 
   return data;
@@ -44,8 +43,8 @@ exports.buildTableData = function (data) {
   }
 
   const keys = Object.keys(data[0]);
-  const tableHead = keys.map(k => `<th>${k.replace(/_/g," ")}</th>`).join('');
-  const tableData = keys.map(k => `<td>\${${k}}</td>`).join('');
+  const tableHead = keys.map((k) => `<th>${k.replace(/_/g, ' ')}</th>`).join('');
+  const tableData = keys.map((k) => `<td>\${${k}}</td>`).join('');
   const bodyDataTemplate = { '<>': 'tr', html: tableData };
 
   return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.transform(data, bodyDataTemplate)}</tbody></table></div>`;
@@ -56,9 +55,9 @@ exports.buildFiltersDisplay = function (params) {
   if (params) {
     delete params.display_title;
 
-    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
+    const fs = Object.keys(params).map((k) => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
     let fss = '';
-    fs.forEach(f => fss += f);
+    fs.forEach((f) => fss += f);
     filter = `
 <div id="filters" style="display:none">
   <h2>Filters</h2>

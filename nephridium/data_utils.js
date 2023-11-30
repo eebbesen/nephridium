@@ -1,9 +1,7 @@
 exports.transformDate = function (date) {
-  if (null === date) return null;
+  if (date === null) return null;
   return new Date(date);
 };
-
-
 
 // strip time from dates that don't have non-zero time
 // todo: refactor to be functional and take in a list of functions to do the transforamtions
@@ -19,7 +17,7 @@ exports.transformData = function (data) {
       if (typeof row[k] === 'string') {
         row[k] = row[k].replace(/T00:00:00.000Z?/, '');
         if (row[k].match(/\dT\d/) && row[k].endsWith('.000')) {
-          row[k] = row[k].replace(/\.000Z?/, '')
+          row[k] = row[k].replace(/\.000Z?/, '');
           row[k] = row[k].replace('T', ' ');
         }
 

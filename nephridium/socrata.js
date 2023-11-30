@@ -16,7 +16,7 @@ exports.buildUrl = function (params) {
 };
 
 // no transformation needed for socrata
-exports.transform = function(data) {
+exports.transform = function (data) {
   return data;
 };
 
@@ -24,8 +24,7 @@ exports.buildDateFilter = function (timeColumn, timeRange) {
   const lookback = timeRange === 'w' ? weekMs : (2 * thirtyDayMs);
   const endDate = new Date(new Date() - lookback);
 
-  return `${timeColumn}%3E%27${this.normalizeDate(endDate.toISOString())}%27`
-
+  return `${timeColumn}%3E%27${this.normalizeDate(endDate.toISOString())}%27`;
 };
 
 exports.normalizeDate = function (date) {
