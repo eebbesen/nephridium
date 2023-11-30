@@ -1,63 +1,63 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs')
+const path = require('path')
 
-const releaseVersion = require('./package.json').version;
+const releaseVersion = require('./package.json').version
 
-const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title', 'provider'];
+const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title', 'provider']
 
 // removes some params for all calls, plus any keys in the to_remove parameter
 exports.buildCustomParams = function (params) {
-  const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',');
-  const rem = customNo.filter((key) => { !params[key]; });
+  const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',')
+  const rem = customNo.filter((key) => { !params[key] })
 
-  const data = { ...params };
-  paramsToRemove.concat(rem).forEach((k) => { delete data[k]; });
+  const data = { ...params }
+  paramsToRemove.concat(rem).forEach((k) => { delete data[k] })
 
-  return data;
-};
+  return data
+}
 
 exports.stringifyParams = function (params) {
-  let pString = '';
+  let pString = ''
   Object.keys(this.buildCustomParams(params)).forEach((key) => {
-    const token = typeof params[key] === 'number' ? '' : '%27';
-    pString += `&${key}=${token}${params[key]}${token}`;
-  });
+    const token = typeof params[key] === 'number' ? '' : '%27'
+    pString += `&${key}=${token}${params[key]}${token}`
+  })
 
-  return pString;
-};
+  return pString
+}
 
 exports.css = function () {
-  return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8');
-};
+  return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8')
+}
 
 exports.javascript = function () {
   return Object.freeze(`
   <script type="text/javascript">
     ${fs.readFileSync(path.resolve(__dirname, './assets/nephridium.js'), 'utf8')}
-  </script>`);
-};
+  </script>`)
+}
 
 exports.buildTableData = function (data) {
   if (data == null || data.length < 1) {
-    return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
+    return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>'
   }
 
-  const keys = Object.keys(data[0]);
-  const tableHead = keys.map((k) => `<th>${k.replace(/_/g, ' ')}</th>`).join('');
-  const tableData = keys.map((k) => `<td>\${${k}}</td>`).join('');
-  const bodyDataTemplate = { '<>': 'tr', html: tableData };
+  const keys = Object.keys(data[0])
+  const tableHead = keys.map((k) => `<th>${k.replace(/_/g, ' ')}</th>`).join('')
+  const tableData = keys.map((k) => `<td>\${${k}}</td>`).join('')
+  const bodyDataTemplate = { '<>': 'tr', html: tableData }
 
-  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.transform(data, bodyDataTemplate)}</tbody></table></div>`;
-};
+  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.transform(data, bodyDataTemplate)}</tbody></table></div>`
+}
 
 exports.buildFiltersDisplay = function (params) {
-  let filter = '';
+  let filter = ''
   if (params) {
-    delete params.display_title;
+    delete params.display_title
 
-    const fs = Object.keys(params).map((k) => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
-    let fss = '';
-    fs.forEach((f) => fss += f);
+    const fs = Object.keys(params).map((k) => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`)
+    let fss = ''
+    fs.forEach((f) => fss += f)
     filter = `
 <div id="filters" style="display:none">
   <h2>Filters</h2>
@@ -65,11 +65,11 @@ exports.buildFiltersDisplay = function (params) {
     ${fss}
   </ul>
 </div>
-`;
+`
   }
 
-  return filter;
-};
+  return filter
+}
 
 exports.html = function (data, dataUrl, params, datasetUrl) {
   return Object.freeze(`
@@ -100,13 +100,13 @@ exports.html = function (data, dataUrl, params, datasetUrl) {
   </div>
   ${this.javascript()}
 </body>
-</html>`);
-};
+</html>`)
+}
 
 exports.getDisplayTitle = function (params) {
-  if (params && params.display_title && params.display_title.length > 0) {
-    return params.display_title;
+  if (params?.display_title && params.display_title.length > 0) {
+    return params.display_title
   }
 
-  return '';
-};
+  return ''
+}

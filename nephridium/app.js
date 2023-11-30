@@ -1,10 +1,10 @@
-const axios = require('axios');
-const json2html = require('node-json2html');
+const axios = require('axios')
+const json2html = require('node-json2html')
 
-const socrata = require('./socrata.js');
-const arcGis = require('./arc_gis.js');
-const uiUtils = require('./ui_utils.js');
-const dataUtils = require('./data_utils.js');
+const socrata = require('./socrata.js')
+const arcGis = require('./arc_gis.js')
+const uiUtils = require('./ui_utils.js')
+const dataUtils = require('./data_utils.js')
 
 /**
  *
@@ -41,81 +41,81 @@ const dataUtils = require('./data_utils.js');
  *
  */
 exports.lambdaHandler = async (event, _context) => {
-  let response;
+  let response
   try {
-    const params = event.queryStringParameters;
-    console.log('EVENT_QSP: ', event.queryStringParameters);
+    const params = event.queryStringParameters
+    console.log('EVENT_QSP: ', event.queryStringParameters)
 
-    const errors = this.buildErrors(params);
+    const errors = this.buildErrors(params)
     if (errors.length > 0) {
       response = {
         statusCode: 400,
-        body: JSON.stringify({ message: errors }),
-      };
+        body: JSON.stringify({ message: errors })
+      }
     } else {
-      const helper = this.helper(params);
-      const url = helper.buildUrl(params);
-      console.log('URL', url);
-      const ret = await axios(url);
-      const transformedData = helper.transform(ret.data);
-      const retData = this.removeAttributes(transformedData, params.to_remove);
-      const modData = dataUtils.transformData(retData, helper);
-      const filterParams = this.getFilterParams(params);
-      const web = uiUtils.html(modData, url, filterParams, params.url);
+      const helper = this.helper(params)
+      const url = helper.buildUrl(params)
+      console.log('URL', url)
+      const ret = await axios(url)
+      const transformedData = helper.transform(ret.data)
+      const retData = this.removeAttributes(transformedData, params.to_remove)
+      const modData = dataUtils.transformData(retData, helper)
+      const filterParams = this.getFilterParams(params)
+      const web = uiUtils.html(modData, url, filterParams, params.url)
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
-        body: web,
-      };
+        body: web
+      }
     }
   } catch (err) {
-    console.log(err);
-    return err;
+    console.log(err)
+    return err
   }
 
-  return response;
-};
+  return response
+}
 
 exports.buildErrors = function (params) {
-  let response = '';
+  let response = ''
   if (typeof params.time_column === 'undefined') {
-    response += 'You must supply a time_column parameter.';
+    response += 'You must supply a time_column parameter.'
   }
   if (typeof params.url === 'undefined') {
-    if (response.length > 0) { response += ' '; }
-    response += 'You must supply a url parameter. Make sure the url parameter is last.';
+    if (response.length > 0) { response += ' ' }
+    response += 'You must supply a url parameter. Make sure the url parameter is last.'
   }
 
-  return response;
-};
+  return response
+}
 
 // arcGis or Socrata
 exports.helper = function (params) {
-  return params && params.provider && params.provider === 'arcGis' ? arcGis : socrata;
-};
+  return params?.provider && params.provider === 'arcGis' ? arcGis : socrata
+}
 
 // return object with only query filter params
 exports.getFilterParams = function (params) {
-  const p = { ...params };
+  const p = { ...params }
 
-  delete p.to_remove;
-  delete p.time_column;
-  delete p.url;
-  delete p.provider;
+  delete p.to_remove
+  delete p.time_column
+  delete p.url
+  delete p.provider
 
-  return p;
-};
+  return p
+}
 
 exports.removeAttributes = function (data, toRemove) {
-  const d = JSON.parse(JSON.stringify(data));
+  const d = JSON.parse(JSON.stringify(data))
   if (toRemove) {
-    const tr = toRemove.split(',');
+    const tr = toRemove.split(',')
     d.forEach((row) => {
       tr.forEach((rm) => {
-        delete row[rm];
-      });
-    });
+        delete row[rm]
+      })
+    })
   }
 
-  return d;
-};
+  return d
+}
