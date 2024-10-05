@@ -193,20 +193,20 @@ describe('Tests index', () => {
 
   describe('lambdaHandler', () => {
     // add .skip or comment out if you don't want to execute this live test
-    it('gets data with additional filters Socrata', async () => {
+    it.only('gets data with additional filters Socrata', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
       const event = {};
       event.queryStringParameters = {
-        url: 'https://opendata.ramseycounty.us/resource/yr93-yzfb',
-        time_column: 'createddate',
-        createdby: 'PublicViewer'
+        url: 'https://opendata.ramseycounty.us/resource/4fqc-s7b9',
+        time_column: 'date',
+        csq_name: 'Navigator'
       };
 
       const response = await app.lambdaHandler(event, null);
       const { body, statusCode } = response;
 
       expect(statusCode).to.equal(200);
-      expect(body).to.contain('facilitytype');
+      expect(body).to.contain('calls abandoned');
     }).timeout(15000);
 
     // add .skip or comment out if you don't want to execute this live test
