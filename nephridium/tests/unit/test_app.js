@@ -193,7 +193,7 @@ describe('Tests index', () => {
 
   describe('lambdaHandler', () => {
     // add .skip or comment out if you don't want to execute this live test
-    it.only('gets data with additional filters Socrata', async () => {
+    it('gets data with additional filters Socrata', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
       const event = {};
       event.queryStringParameters = {
