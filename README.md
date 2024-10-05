@@ -273,27 +273,22 @@ See https://docs.aws.amazon.com/serverlessrepo/latest/devguide/serverless-app-pu
 Providing test examples for local and deployed endpoints
 
 ### Bare minimum -- `time_column` and `url`
-```bash
-curl -vvv 'http://127.0.0.1:3000/?time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
+http://127.0.0.1:3000/?time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6
 
-curl -vvv 'http://127.0.0.1:3000/?provider=arcGis&time_column=REQUEST_DATE&url=https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/'
+http://127.0.0.1:3000/?provider=arcGis&time_column=REQUEST_DATE&url=https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6
-```
+https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json
+
 
 ### Custom parameters in query
-```bash
-curl -vvv 'http://127.0.0.1:3000/?status=Open&time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
+http://127.0.0.1:3000/?status=Open&time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
-```
 
 ### Custom parameters in query with filtered attributes
-```bash
-curl -vvv -X GET 'http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
+http://127.0.0.1:3000/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6
 
-curl -vvv 'https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6'
-```
+https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6
+
 
 ## Accessibility testing
 [http://wave.webaim.org/report#/https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6](http://wave.webaim.org/report#/https://abcd1234.execute-api.us-east-1.amazonaws.com/Prod/?status=Open&time_column=date&to_remove=sample_mean,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6)
