@@ -1,5 +1,4 @@
 const axios = require('axios');
-const json2html = require('node-json2html');
 
 const socrata = require('./socrata.js');
 const arcGis = require('./arc_gis.js');

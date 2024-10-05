@@ -1,4 +1,5 @@
 const fs = require('fs');
+const json2html = require('node-json2html');
 const path = require('path');
 
 const releaseVersion = require('./package.json').version;

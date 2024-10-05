@@ -48,6 +48,8 @@ If we want to further filter the dataset we can do that, too.
 ### Adding a title
 Set `display_title` to a encoded URL string. This means you need to use `+` or `%20` to represent spaces. See [this page](https://www.w3schools.com/tags/ref_urlencode.asp) for more encoding mappings.
 
+http://127.0.0.1:3000/?status=Open&display_title=Beach%20Dataset&time_column=date&to_remove=geocoded_column,upload_date,sampling_site_id&url=https://opendata.ramseycounty.us/resource/2yt3-vdb6
+
 ### Excluding columns
 In our example, let's say we don't want to see the county column. We'll add a `to_remove` parameter for that. Note that this is case sensitive -- you must use the same case in `to_remove` as the underlying JSON.
 
