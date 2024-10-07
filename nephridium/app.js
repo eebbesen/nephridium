@@ -1,9 +1,8 @@
-const axios = require('axios');
-
-const socrata = require('./socrata.js');
-const arcGis = require('./arc_gis.js');
-const uiUtils = require('./ui_utils.js');
-const dataUtils = require('./data_utils.js');
+import axios from 'axios';
+import * as socrata from './socrata.js';
+import * as arcGis from './arc_gis.js';
+import { html } from './ui_utils.js';
+import { transformData } from './data_utils.js';
 
 /**
  *
@@ -39,7 +38,7 @@ const dataUtils = require('./data_utils.js');
  * @returns {Object} object.body - JSON Payload to be returned
  *
  */
-exports.lambdaHandler = async (event, _context) => {
+export async function lambdaHandler(event, _context) {
   let response;
   try {
     const params = event.queryStringParameters;
@@ -52,15 +51,15 @@ exports.lambdaHandler = async (event, _context) => {
         body: JSON.stringify({ message: errors }),
       };
     } else {
-      const helper = this.helper(params);
-      const url = helper.buildUrl(params);
+      const localHelper = this.helper(params);
+      const url = localHelper.buildUrl(params);
       console.log('URL', url);
       const ret = await axios(url);
-      const transformedData = helper.transform(ret.data);
+      const transformedData = localHelper.transform(ret.data);
       const retData = this.removeAttributes(transformedData, params.to_remove);
-      const modData = dataUtils.transformData(retData, helper);
+      const modData = transformData(retData, localHelper);
       const filterParams = this.getFilterParams(params);
-      const web = uiUtils.html(modData, url, filterParams, params.url);
+      const web = html(modData, url, filterParams, params.url);
       response = {
         statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
@@ -73,9 +72,9 @@ exports.lambdaHandler = async (event, _context) => {
   }
 
   return response;
-};
+}
 
-exports.buildErrors = function (params) {
+export function buildErrors(params) {
   let response = '';
   if (typeof params.time_column === 'undefined') {
     response += 'You must supply a time_column parameter.';
@@ -86,16 +85,16 @@ exports.buildErrors = function (params) {
   }
 
   return response;
-};
+}
 
 // arcGis or Socrata
-exports.helper = function (params) {
-  return params && params['provider'] && params['provider'] === 'arcGis' ? arcGis : socrata;
+export function helper(params) {
+  return params && params.provider && params.provider === 'arcGis' ? arcGis : socrata;
 }
 
 // return object with only query filter params
-exports.getFilterParams = function (params) {
-  const p = Object.assign({}, params);
+export function getFilterParams(params) {
+  const p = { ...params };
 
   delete p.to_remove;
   delete p.time_column;
@@ -103,9 +102,9 @@ exports.getFilterParams = function (params) {
   delete p.provider;
 
   return p;
-};
+}
 
-exports.removeAttributes = function (data, toRemove) {
+export function removeAttributes(data, toRemove) {
   const d = JSON.parse(JSON.stringify(data));
   if (toRemove) {
     const tr = toRemove.split(',');
@@ -117,4 +116,4 @@ exports.removeAttributes = function (data, toRemove) {
   }
 
   return d;
-};
+}

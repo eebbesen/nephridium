@@ -1,7 +1,5 @@
-const chai = require('chai');
-const arcGis = require('../../arc_gis.js');
-const app = require('../../app.js');
-
+import chai from 'chai';
+import { transform, buildSearchParams, buildUrl, buildDateFilter } from '../../arc_gis.js';
 const { expect } = chai;
 
 describe('transform', () => {
@@ -60,7 +58,7 @@ describe('transform', () => {
       ]
     };
 
-    const ret = arcGis.transform(data);
+    const ret = transform(data);
 
     expect(ret.length).to.equal(2);
     expect(ret[0]['SERVICE_NUMBER']).to.equal(4041371);
@@ -70,20 +68,20 @@ describe('transform', () => {
 
 describe('buildUrl', () => {
   it('builds url for one week', () => {
-    const expectedDate = arcGis.buildDateFilter(new Date().toISOString(), 'w');
+    const expectedDate = buildDateFilter(new Date().toISOString(), 'w');
     const params = {
       url: 'https://a.arcgis.dataset.com/resource/abcd-efgh',
       time_range: 'w',
       time_column: 'REQUEST_DATE',
     };
 
-    const result = arcGis.buildUrl(params);
+    const result = buildUrl(params);
 
     expect(result).to.equal(`https://a.arcgis.dataset.com/resource/abcd-efgh/0/query?where=REQUEST_DATE%20%3E%20CURRENT_TIMESTAMP%20-%20INTERVAL%20%277%27%20DAY&orderByFields=REQUEST_DATE%20DESC&outFields=*&f=json`);
   });
 
   it('builds with additional params', () => {
-    const expectedDate = arcGis.buildDateFilter(new Date().toISOString(), 'w');
+    const expectedDate = buildDateFilter(new Date().toISOString(), 'w');
     const params = {
       url: 'https://a.arcgis.dataset.com/resource/abcd-efgh',
       time_range: 'w',
@@ -91,7 +89,7 @@ describe('buildUrl', () => {
       STATUS: 'Open'
     };
 
-    const result = arcGis.buildUrl(params);
+    const result = buildUrl(params);
 
     expect(result).to.equal(`https://a.arcgis.dataset.com/resource/abcd-efgh/0/query?where=REQUEST_DATE%20%3E%20CURRENT_TIMESTAMP%20-%20INTERVAL%20%277%27%20DAY+AND+STATUS%3D%27Open%27&orderByFields=REQUEST_DATE%20DESC&outFields=*&f=json`);
   });
@@ -107,7 +105,7 @@ describe('buildSearchParams', () => {
       DISTRICT_COUNCIL: 7
     };
 
-    const result = arcGis.buildSearchParams(params);
+    const result = buildSearchParams(params);
     expect(result).to.equal(`+AND+STATUS%3D%27Open%27+AND+DISTRICT_COUNCIL%3D%277%27`);
   });
 
