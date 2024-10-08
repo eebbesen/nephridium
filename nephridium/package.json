@@ -1,14 +1,15 @@
 {
   "name": "nephridium",
-  "version": "2.1.1",
+  "version": "3.1.1",
   "description": "An AWS Serverless Appliction that produces filtered Socrata and Arc GIS datasets",
   "main": "src/app.js",
   "repository": "https://github.com/eebbesen/nephridium",
   "author": "eebbesen",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
-    "axios": ">=0.22.0",
-    "node-json2html": ">=2.1.0"
+    "axios": ">=1.7.7",
+    "node-json2html": ">=3.2.0"
   },
   "scripts": {
     "test": "nyc -x '**/tests/**' mocha tests/unit/",
@@ -17,7 +18,7 @@
     "lintfix": "node_modules/eslint/bin/eslint.js . --fix"
   },
   "engines": {
-    "node": ">=18.18.2"
+    "node": ">=20.18.0"
   },
   "devDependencies": {
     "chai": ">=4.2.0",

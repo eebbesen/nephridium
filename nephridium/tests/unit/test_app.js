@@ -1,9 +1,7 @@
-const chai = require('chai');
-const app = require('../../app.js');
-const socrata = require('../../socrata.js');
-const arcGis = require('../../arc_gis.js');
-
-const { expect } = chai;
+import { expect } from 'chai';
+import * as app from '../../app.js';
+import * as socrata from '../../socrata.js';
+import * as arcGis from '../../arc_gis.js';
 
 describe('helper', () => {
   it('returns socrata with no provider param', () => {

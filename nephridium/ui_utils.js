@@ -1,65 +1,70 @@
-const fs = require('fs');
-const json2html = require('node-json2html');
-const path = require('path');
+import fs from 'fs';
+import json2html from 'node-json2html';
+import path from 'path';
 
-const releaseVersion = require('./package.json').version;
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
+// import {version} from './package.json';
+
+const { render } = json2html;
 const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title', 'provider'];
 
-
 // removes some params for all calls, plus any keys in the to_remove parameter
-exports.buildCustomParams = function (params) {
+export function buildCustomParams(params) {
   const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',');
   const rem = customNo.filter((key) => { !params[key]; });
 
-  const data = Object.assign({}, params);
+  const data = { ...params };
   paramsToRemove.concat(rem).forEach((k) => { delete data[k]; });
 
   return data;
-};
+}
 
-exports.stringifyParams = function (params) {
+export function stringifyParams(params) {
   let pString = '';
-  Object.keys(this.buildCustomParams(params)).forEach((key) => {
+  Object.keys(buildCustomParams(params)).forEach((key) => {
     const token = typeof params[key] === 'number' ? '' : '%27';
     pString += `&${key}=${token}${params[key]}${token}`;
   });
 
   return pString;
-};
+}
 
-exports.css = function () {
+export function css() {
   return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8');
-};
+}
 
-exports.javascript = function () {
+export function javascript() {
   return Object.freeze(`
   <script type="text/javascript">
     ${fs.readFileSync(path.resolve(__dirname, './assets/nephridium.js'), 'utf8')}
   </script>`);
-};
+}
 
-exports.buildTableData = function (data) {
+export function buildTableData(data) {
   if (data == null || data.length < 1) {
     return '<div class="error"><p>No records found</p><p>Please expand your search</p></div>';
   }
 
   const keys = Object.keys(data[0]);
-  const tableHead = keys.map(k => `<th>${k.replace(/_/g," ")}</th>`).join('');
-  const tableData = keys.map(k => `<td>\${${k}}</td>`).join('');
+  const tableHead = keys.map((k) => `<th>${k.replace(/_/g, ' ')}</th>`).join('');
+  const tableData = keys.map((k) => `<td>\${${k}}</td>`).join('');
   const bodyDataTemplate = { '<>': 'tr', html: tableData };
 
-  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${json2html.transform(data, bodyDataTemplate)}</tbody></table></div>`;
-};
+  return `<div id="data_table"><table><thead><tr>${tableHead}</tr></thead><tbody>${render(data, bodyDataTemplate)}</tbody></table></div>`;
+}
 
-exports.buildFiltersDisplay = function (params) {
+export function buildFiltersDisplay(params) {
   let filter = '';
   if (params) {
     delete params.display_title;
 
-    const fs = Object.keys(params).map(k => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
+    const fs = Object.keys(params).map((k) => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
     let fss = '';
-    fs.forEach(f => fss += f);
+    fs.forEach((f) => fss += f);
     filter = `
 <div id="filters" style="display:none">
   <h2>Filters</h2>
@@ -71,14 +76,14 @@ exports.buildFiltersDisplay = function (params) {
   }
 
   return filter;
-};
+}
 
-exports.html = function (data, dataUrl, params, datasetUrl) {
+export function html(data, dataUrl, params, datasetUrl) {
   return Object.freeze(`
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-  <style>${this.css()}</style>
+  <style>${css()}</style>
   <title>Nephridium-powered page</title>
   <link rel="shortcut icon" href="#" />
   <link rel="shortcut icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Filter_font_awesome.svg/32px-Filter_font_awesome.svg.png"/>
@@ -86,7 +91,7 @@ exports.html = function (data, dataUrl, params, datasetUrl) {
 <body>
   <div id="description">
     <h1>
-      <a href="${datasetUrl}">${this.getDisplayTitle(params)}</a>
+      <a href="${datasetUrl}">${getDisplayTitle(params)}</a>
     </h1>
   </div>
 
@@ -95,20 +100,20 @@ exports.html = function (data, dataUrl, params, datasetUrl) {
     <button id="downloadJSON" type="button" onclick="location.href='${dataUrl}'">Raw JSON</button>
     <button id="toggleFilters" type="button" onclick="toggleFilterDisplay()">Show Filters</button>
   </div>
-  ${this.buildFiltersDisplay(params)}
-  <div>${this.buildTableData(data)}</div>
+  ${buildFiltersDisplay(params)}
+  <div>${buildTableData(data)}</div>
   <div id="footer">
-    <div class="footerElement" id="footerElementLeft">nephridium version: ${releaseVersion}</div><div id="footerElementRight" class="footerElement">Get the source code <a id="github" class="footerElement" href="https://github.com/eebbesen/nephridium">here</a></div>
+    <div class="footerElement" id="footerElementLeft">nephridium version: 3.1.1</div><div id="footerElementRight" class="footerElement">Get the source code <a id="github" class="footerElement" href="https://github.com/eebbesen/nephridium">here</a></div>
   </div>
-  ${this.javascript()}
+  ${javascript()}
 </body>
 </html>`);
-};
+}
 
-exports.getDisplayTitle = function (params) {
+export function getDisplayTitle(params) {
   if (params && params.display_title && params.display_title.length > 0) {
     return params.display_title;
   }
 
   return '';
-};
+}
