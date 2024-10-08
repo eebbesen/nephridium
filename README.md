@@ -227,6 +227,10 @@ To have linter fix what it can
 npm run lint -- --fix
 ```
 
+### Prettier
+```bash
+npm run prettier
+```
 
 # Appendix
 
