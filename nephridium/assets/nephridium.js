@@ -33,9 +33,9 @@ function toggleFilterDisplay() {
   const style = document.getElementById('filters').style.display;
   if (style && style == 'block') {
     document.getElementById('filters').style.display = 'none';
-    const b = document.getElementById('toggleFilters').innerText = 'Show Filters';
+    document.getElementById('toggleFilters').innerText = 'Show Filters';
   } else {
     document.getElementById('filters').style.display = 'block';
-    const b = document.getElementById('toggleFilters').innerText = 'Hide Filters';
+    document.getElementById('toggleFilters').innerText = 'Hide Filters';
   }
 }
