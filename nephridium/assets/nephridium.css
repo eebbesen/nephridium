@@ -1,7 +1,7 @@
 *:not(.footerElement) {
   border-collapse: collapse;
   padding: 5px;
-  font-family: helvetica;;
+  font-family: helvetica;
 }
 
 th {
@@ -82,4 +82,3 @@ table {
   display: flex;
   justify-content: center;
 }
-

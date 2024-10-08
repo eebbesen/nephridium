@@ -45,8 +45,11 @@ export function buildErrors(params) {
     response += 'You must supply a time_column parameter.';
   }
   if (typeof params.url === 'undefined') {
-    if (response.length > 0) { response += ' '; }
-    response += 'You must supply a url parameter. Make sure the url parameter is last.';
+    if (response.length > 0) {
+      response += ' ';
+    }
+    response +=
+      'You must supply a url parameter. Make sure the url parameter is last.';
   }
 
   return response;
@@ -54,7 +57,9 @@ export function buildErrors(params) {
 
 // arcGis or Socrata
 export function helper(params) {
-  return params && params.provider && params.provider === 'arcGis' ? arcGis : socrata;
+  return params && params.provider && params.provider === 'arcGis'
+    ? arcGis
+    : socrata;
 }
 
 // return object with only query filter params

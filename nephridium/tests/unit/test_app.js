@@ -9,11 +9,11 @@ describe('helper', () => {
   });
 
   it('returns socrata with provider param socrata', () => {
-    expect(app.helper({provider: "socrata"})).to.equal(socrata);
+    expect(app.helper({ provider: 'socrata' })).to.equal(socrata);
   });
 
   it('returns socrata with provider param invalid', () => {
-    expect(app.helper({provider: "blah"})).to.equal(socrata);
+    expect(app.helper({ provider: 'blah' })).to.equal(socrata);
   });
 
   it('returns socrata with null params', () => {
@@ -21,7 +21,7 @@ describe('helper', () => {
   });
 
   it('returns arcGis with provider param argGis', () => {
-    expect(app.helper({provider: "arcGis"})).to.equal(arcGis);
+    expect(app.helper({ provider: 'arcGis' })).to.equal(arcGis);
   });
 });
 
@@ -32,7 +32,8 @@ describe('getFilterParams', () => {
       request_description: 'Graffiti',
       display_title: 'This+is+a+display+title',
       time_column: 'request_date',
-      to_remove: 'count,map_location_address,map_location_city,map_location_state,ward,map_location_zip,map_location,district_council,see_click_fix_website_submission',
+      to_remove:
+        'count,map_location_address,map_location_city,map_location_state,ward,map_location_zip,map_location,district_council,see_click_fix_website_submission',
       provider: 'arcGis',
       url: 'https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/',
     };
@@ -185,7 +186,9 @@ describe('Tests index', () => {
 
       const response = app.buildErrors(params);
 
-      expect(response).to.equal('You must supply a time_column parameter. You must supply a url parameter. Make sure the url parameter is last.');
+      expect(response).to.equal(
+        'You must supply a time_column parameter. You must supply a url parameter. Make sure the url parameter is last.',
+      );
     });
   });
 
@@ -197,7 +200,7 @@ describe('Tests index', () => {
       event.queryStringParameters = {
         url: 'https://opendata.ramseycounty.us/resource/4fqc-s7b9',
         time_column: 'date',
-        csq_name: 'Navigator'
+        csq_name: 'Navigator',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -215,7 +218,7 @@ describe('Tests index', () => {
         url: 'https://services1.arcgis.com/9meaaHE3uiba0zr8/arcgis/rest/services/Resident_Service_Requests/FeatureServer/',
         time_column: 'request_date',
         STATUS: 'Resolved',
-        provider: 'arcGis'
+        provider: 'arcGis',
       };
 
       const response = await app.lambdaHandler(event, null);
@@ -264,7 +267,9 @@ describe('Tests index', () => {
       const body = JSON.parse(response.body);
 
       expect(response.statusCode).to.equal(400);
-      expect(body.message).to.equal('You must supply a url parameter. Make sure the url parameter is last.');
+      expect(body.message).to.equal(
+        'You must supply a url parameter. Make sure the url parameter is last.',
+      );
     });
 
     it('retrns a descriptive error message when no url and no time_column', async () => {
@@ -277,25 +282,42 @@ describe('Tests index', () => {
       const body = JSON.parse(response.body);
 
       expect(response.statusCode).to.equal(400);
-      expect(body.message).to.equal('You must supply a time_column parameter. You must supply a url parameter. Make sure the url parameter is last.');
+      expect(body.message).to.equal(
+        'You must supply a time_column parameter. You must supply a url parameter. Make sure the url parameter is last.',
+      );
     });
   });
 
   describe('removeAttributes', () => {
     it('removes attributes from every row', () => {
-      const data = [{
-        name: 'first', a: '1', b: '2', c: '3',
-      },
-      {
-        name: 'second', a: '1', b: '2', c: '3',
-      },
-      {
-        name: 'third', a: '1', b: '2', c: '3',
-      }];
+      const data = [
+        {
+          name: 'first',
+          a: '1',
+          b: '2',
+          c: '3',
+        },
+        {
+          name: 'second',
+          a: '1',
+          b: '2',
+          c: '3',
+        },
+        {
+          name: 'third',
+          a: '1',
+          b: '2',
+          c: '3',
+        },
+      ];
 
       const result = app.removeAttributes(data, 'a,b');
 
-      result.forEach(r => expect(typeof r.a).to.equal('undefined') && expect(typeof r.b).to.equal('undefined'));
+      result.forEach(
+        (r) =>
+          expect(typeof r.a).to.equal('undefined') &&
+          expect(typeof r.b).to.equal('undefined'),
+      );
     });
   });
 });

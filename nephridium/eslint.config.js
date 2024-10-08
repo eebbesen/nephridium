@@ -1,10 +1,15 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import babelParser from "@babel/eslint-parser";
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import babelParser from '@babel/eslint-parser';
 
 export default [
-  {languageOptions: { globals: globals.browser }},
+  { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
-  { ignores: [".config/*", "mochawesome-report/*", "assets/**.css"] },
-  { languageOptions: { parser: babelParser, parserOptions: { "requireConfigFile": false }}},
+  { ignores: ['.config/*', 'mochawesome-report/*', 'assets/**.css'] },
+  {
+    languageOptions: {
+      parser: babelParser,
+      parserOptions: { requireConfigFile: false },
+    },
+  },
 ];

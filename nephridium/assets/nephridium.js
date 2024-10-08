@@ -4,8 +4,8 @@ function exportTableToCSV(filename) {
   const rows = document.querySelectorAll('table tr');
 
   for (let i = 0; i < rows.length; i++) {
-    const row = []; const
-      cols = rows[i].querySelectorAll('td, th');
+    const row = [];
+    const cols = rows[i].querySelectorAll('td, th');
 
     for (let j = 0; j < cols.length; j++) {
       row.push(cols[j].innerText);
