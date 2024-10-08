@@ -10,15 +10,26 @@ const __dirname = dirname(__filename);
 // import {version} from './package.json';
 
 const { render } = json2html;
-const paramsToRemove = ['time_column', 'url', 'time_range', 'to_remove', 'display_title', 'provider'];
+const paramsToRemove = [
+  'time_column',
+  'url',
+  'time_range',
+  'to_remove',
+  'display_title',
+  'provider',
+];
 
 // removes some params for all calls, plus any keys in the to_remove parameter
 export function buildCustomParams(params) {
   const customNo = (params.to_remove ? `,${params.to_remove}` : '').split(',');
-  const rem = customNo.filter((key) => { !params[key]; });
+  const rem = customNo.filter((key) => {
+    !params[key];
+  });
 
   const data = { ...params };
-  paramsToRemove.concat(rem).forEach((k) => { delete data[k]; });
+  paramsToRemove.concat(rem).forEach((k) => {
+    delete data[k];
+  });
 
   return data;
 }
@@ -34,7 +45,10 @@ export function stringifyParams(params) {
 }
 
 export function css() {
-  return fs.readFileSync(path.resolve(__dirname, './assets/nephridium.css'), 'utf8');
+  return fs.readFileSync(
+    path.resolve(__dirname, './assets/nephridium.css'),
+    'utf8',
+  );
 }
 
 export function javascript() {
@@ -50,7 +64,9 @@ export function buildTableData(data) {
   }
 
   const keys = Object.keys(data[0]);
-  const tableHead = keys.map((k) => `<th>${k.replace(/_/g, ' ')}</th>`).join('');
+  const tableHead = keys
+    .map((k) => `<th>${k.replace(/_/g, ' ')}</th>`)
+    .join('');
   const tableData = keys.map((k) => `<td>\${${k}}</td>`).join('');
   const bodyDataTemplate = { '<>': 'tr', html: tableData };
 
@@ -62,9 +78,12 @@ export function buildFiltersDisplay(params) {
   if (params) {
     delete params.display_title;
 
-    const fs = Object.keys(params).map((k) => `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${(params[k]).toString().toLowerCase()}</li>`);
+    const fs = Object.keys(params).map(
+      (k) =>
+        `<li>${k.toUpperCase().replace(/_/g, ' ')}: ${params[k].toString().toLowerCase()}</li>`,
+    );
     let fss = '';
-    fs.forEach((f) => fss += f);
+    fs.forEach((f) => (fss += f));
     filter = `
 <div id="filters" style="display:none">
   <h2>Filters</h2>

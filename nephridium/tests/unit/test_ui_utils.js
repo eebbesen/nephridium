@@ -1,5 +1,12 @@
 import chai from 'chai';
-import { buildCustomParams, buildFiltersDisplay, buildTableData, getDisplayTitle, html,stringifyParams } from '../../ui_utils.js';
+import {
+  buildCustomParams,
+  buildFiltersDisplay,
+  buildTableData,
+  getDisplayTitle,
+  html,
+  stringifyParams,
+} from '../../ui_utils.js';
 
 const { expect } = chai;
 
@@ -54,37 +61,45 @@ describe('html', () => {
   it('no data shows message', () => {
     const result = html([]);
 
-    expect(result)
-      .to.contain('<p>No records found</p><p>Please expand your search</p>');
+    expect(result).to.contain(
+      '<p>No records found</p><p>Please expand your search</p>',
+    );
   });
 });
 
 describe('buildTableData', () => {
   it('returns no records found when null data', () => {
     const ret = buildTableData(null);
-    expect(ret)
-      .to.equal('<div class="error"><p>No records found</p><p>Please expand your search</p></div>');
+    expect(ret).to.equal(
+      '<div class="error"><p>No records found</p><p>Please expand your search</p></div>',
+    );
   });
 
   it('returns no records found when empty data', () => {
     const ret = buildTableData([]);
-    expect(ret)
-      .to.equal('<div class="error"><p>No records found</p><p>Please expand your search</p></div>');
+    expect(ret).to.equal(
+      '<div class="error"><p>No records found</p><p>Please expand your search</p></div>',
+    );
   });
 
   it('returns properly-formatted records', () => {
     const data = {
       a: '2018-10-01 00:00:01',
       b: 2,
-      d: '7T989','name_one': '2018-10-01', 'c_you_later': '3',
+      d: '7T989',
+      name_one: '2018-10-01',
+      c_you_later: '3',
     };
 
     const ret = buildTableData([data]);
 
-    const expectedHeader = '<thead><tr><th>a</th><th>b</th><th>d</th><th>name one</th><th>c you later</th></tr></thead>';
-    const expectedBody = '<tbody><tr><td>2018-10-01 00:00:01</td><td>2</td><td>7T989</td><td>2018-10-01</td><td>3</td></tr></tbody>';
-    expect(ret)
-      .to.equal(`<div id="data_table"><table>${expectedHeader}${expectedBody}</table></div>`);
+    const expectedHeader =
+      '<thead><tr><th>a</th><th>b</th><th>d</th><th>name one</th><th>c you later</th></tr></thead>';
+    const expectedBody =
+      '<tbody><tr><td>2018-10-01 00:00:01</td><td>2</td><td>7T989</td><td>2018-10-01</td><td>3</td></tr></tbody>';
+    expect(ret).to.equal(
+      `<div id="data_table"><table>${expectedHeader}${expectedBody}</table></div>`,
+    );
   });
 });
 
@@ -95,8 +110,9 @@ describe('buildFiltersDisplay', () => {
       display_title: 'A+Display+Title',
     });
 
-    expect(ret)
-      .to.equal('\n<div id="filters" style="display:none">\n  <h2>Filters</h2>\n  <ul>\n    <li>DISTRICT COUNCIL: 8</li>\n  </ul>\n</div>\n');
+    expect(ret).to.equal(
+      '\n<div id="filters" style="display:none">\n  <h2>Filters</h2>\n  <ul>\n    <li>DISTRICT COUNCIL: 8</li>\n  </ul>\n</div>\n',
+    );
   });
 
   it('produces embeddible html', () => {
@@ -105,8 +121,9 @@ describe('buildFiltersDisplay', () => {
       status: 'Open',
     });
 
-    expect(ret)
-      .to.equal('\n<div id="filters" style="display:none">\n  <h2>Filters</h2>\n  <ul>\n    <li>DISTRICT COUNCIL: 8</li><li>STATUS: open</li>\n  </ul>\n</div>\n');
+    expect(ret).to.equal(
+      '\n<div id="filters" style="display:none">\n  <h2>Filters</h2>\n  <ul>\n    <li>DISTRICT COUNCIL: 8</li><li>STATUS: open</li>\n  </ul>\n</div>\n',
+    );
   });
 });
 
@@ -124,15 +141,17 @@ describe('getDisplayTitle', () => {
   });
 
   it('handles params with display_title', () => {
-    expect(getDisplayTitle({ some: 'thing', display_title: 'This+is+a+title' }))
-      .to.equal('This+is+a+title');
+    expect(
+      getDisplayTitle({ some: 'thing', display_title: 'This+is+a+title' }),
+    ).to.equal('This+is+a+title');
   });
 
   describe('stringifyParams', () => {
     it('stringifiesParams with tics', () => {
-      const params = {status: 'Open', latitude: -92.9966451326};
-      expect(stringifyParams(params))
-        .to.equal('&status=%27Open%27&latitude=-92.9966451326');
+      const params = { status: 'Open', latitude: -92.9966451326 };
+      expect(stringifyParams(params)).to.equal(
+        '&status=%27Open%27&latitude=-92.9966451326',
+      );
     });
   });
 });

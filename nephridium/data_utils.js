@@ -21,7 +21,7 @@ export function transformData(data) {
           row[k] = row[k].replace('T', ' ');
         }
 
-        if (k == ('location')) {
+        if (k == 'location') {
           row[k] = mapIt(row[k]);
         }
       }

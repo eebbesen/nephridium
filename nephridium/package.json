@@ -12,20 +12,22 @@
     "node-json2html": ">=3.2.0"
   },
   "scripts": {
-    "test": "c8 -x '**/tests/**' mocha tests/unit/",
-    "test_report": "c8 -x '**/tests/**' mocha tests/unit/ --reporter mochawesome",
     "lint": "node_modules/eslint/bin/eslint.js .",
-    "lintfix": "node_modules/eslint/bin/eslint.js . --fix"
+    "prettier": "prettier --write .",
+    "test": "c8 -x '**/tests/**' mocha tests/unit/",
+    "test_report": "c8 -x '**/tests/**' mocha tests/unit/ --reporter mochawesome"
   },
   "engines": {
     "node": ">=20.18.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.25.7",
+    "@eslint/js": "^9.12.0",
+    "babel-eslint": "^10.1.0",
     "c8": ">=10.1.2",
     "chai": ">=4.2.0",
-    "eslint": ">=5.16.0",
-    "eslint-config-airbnb-base": ">=13.2.0",
-    "eslint-plugin-import": ">=2.20.2",
+    "eslint": "^8.57.1",
+    "globals": "^15.10.0",
     "minimist": ">=0.2.1",
     "mocha": ">=7.2.0",
     "mochawesome": "^7.1.3"

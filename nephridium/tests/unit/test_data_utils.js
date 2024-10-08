@@ -14,20 +14,22 @@ describe('transformDate', () => {
   });
 
   it('transforms UTC ISO string to date', () => {
-    const ret = transformDate("2022-08-30T00:00:00.000Z");
+    const ret = transformDate('2022-08-30T00:00:00.000Z');
     expect(ret.getTime()).to.equal(1661817600000);
   });
 });
 
 describe('transformData', () => {
   it('simplifies dates without timestamp', () => {
-    const data = [{
-      name_one: '2018-10-01T00:00:00.000',
-      a: '2018-10-01T00:00:01.000',
-      b: 2,
-      c_you_later: '3',
-      d: '7T989',
-    }];
+    const data = [
+      {
+        name_one: '2018-10-01T00:00:00.000',
+        a: '2018-10-01T00:00:01.000',
+        b: 2,
+        c_you_later: '3',
+        d: '7T989',
+      },
+    ];
 
     const result = transformData(data)[0];
     expect(result['name_one']).to.equal('2018-10-01');
@@ -38,32 +40,41 @@ describe('transformData', () => {
   });
 
   it('decorates locations', () => {
-    const data = [{
-      name_one: '2018-10-01T00:00:00.000',
-      location: '1600 Grand Ave',
-    }];
+    const data = [
+      {
+        name_one: '2018-10-01T00:00:00.000',
+        location: '1600 Grand Ave',
+      },
+    ];
     const result = transformData(data)[0];
-    expect(result.location).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>');
+    expect(result.location).to.equal(
+      '<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>',
+    );
   });
 
   it('changes timestamp into date', () => {
-    const data = [{
-      name_one: '2018-10-01T00:00:00.000',
-      a: '2018-10-01T00:00:01.000',
-      b: 2,
-      c_you_later: '3',
-      d: '7T989',
-      e: 1663891200000
-    }];
+    const data = [
+      {
+        name_one: '2018-10-01T00:00:00.000',
+        a: '2018-10-01T00:00:01.000',
+        b: 2,
+        c_you_later: '3',
+        d: '7T989',
+        e: 1663891200000,
+      },
+    ];
 
     const result = transformData(data)[0];
-    expect(result.e).to.equal(new Date(1663891200000).toISOString().slice(0,10));
+    expect(result.e).to.equal(
+      new Date(1663891200000).toISOString().slice(0, 10),
+    );
   });
 });
 
 describe('mapIt', () => {
   const result = mapIt('1600 Grand Ave');
 
-  expect(result).to.equal('<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>');
+  expect(result).to.equal(
+    '<a href="https://www.google.com/maps/place/1600%20Grand%20Ave%20Saint+Paul,+MN">1600 Grand Ave</a>',
+  );
 });
-

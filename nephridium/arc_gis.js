@@ -11,7 +11,7 @@ export function transform(json) {
 }
 
 export function buildDateFilter(timeColumn, timeRange) {
-  const lookback = (timeRange && timeRange === 'w') ? 7 : 30;
+  const lookback = timeRange && timeRange === 'w' ? 7 : 30;
   return `${timeColumn}%20%3E%20CURRENT_TIMESTAMP%20-%20INTERVAL%20%27${lookback}%27%20DAY`;
 }
 
@@ -35,4 +35,3 @@ export function buildUrl(params) {
 
   return `${baseUrl}/0/query?where=${dateFilter}${otherSearchParams}&orderByFields=${timeColumn}%20DESC&outFields=*&f=json`;
 }
-

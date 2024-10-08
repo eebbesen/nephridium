@@ -4,8 +4,8 @@ function exportTableToCSV(filename) {
   const rows = document.querySelectorAll('table tr');
 
   for (let i = 0; i < rows.length; i++) {
-    const row = []; const
-      cols = rows[i].querySelectorAll('td, th');
+    const row = [];
+    const cols = rows[i].querySelectorAll('td, th');
 
     for (let j = 0; j < cols.length; j++) {
       row.push(cols[j].innerText);
@@ -33,9 +33,9 @@ function toggleFilterDisplay() {
   const style = document.getElementById('filters').style.display;
   if (style && style == 'block') {
     document.getElementById('filters').style.display = 'none';
-    const b = document.getElementById('toggleFilters').innerText = 'Show Filters';
+    document.getElementById('toggleFilters').innerText = 'Show Filters';
   } else {
     document.getElementById('filters').style.display = 'block';
-    const b = document.getElementById('toggleFilters').innerText = 'Hide Filters';
+    document.getElementById('toggleFilters').innerText = 'Hide Filters';
   }
 }
