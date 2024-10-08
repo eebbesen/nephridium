@@ -38,41 +38,6 @@ import { transformData } from './data_utils.js';
  * @returns {Object} object.body - JSON Payload to be returned
  *
  */
-export async function lambdaHandler(event, _context) {
-  let response;
-  try {
-    const params = event.queryStringParameters;
-    console.log('EVENT_QSP: ', event.queryStringParameters);
-
-    const errors = this.buildErrors(params);
-    if (errors.length > 0) {
-      response = {
-        statusCode: 400,
-        body: JSON.stringify({ message: errors }),
-      };
-    } else {
-      const localHelper = this.helper(params);
-      const url = localHelper.buildUrl(params);
-      console.log('URL', url);
-      const ret = await axios(url);
-      const transformedData = localHelper.transform(ret.data);
-      const retData = this.removeAttributes(transformedData, params.to_remove);
-      const modData = transformData(retData, localHelper);
-      const filterParams = this.getFilterParams(params);
-      const web = html(modData, url, filterParams, params.url);
-      response = {
-        statusCode: 200,
-        headers: { 'Content-Type': 'text/html' },
-        body: web,
-      };
-    }
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
-
-  return response;
-}
 
 export function buildErrors(params) {
   let response = '';
@@ -116,4 +81,40 @@ export function removeAttributes(data, toRemove) {
   }
 
   return d;
+}
+
+export async function lambdaHandler(event, _context) {
+  let response;
+  try {
+    const params = event.queryStringParameters;
+    console.log('EVENT_QSP: ', event.queryStringParameters);
+
+    const errors = buildErrors(params);
+    if (errors.length > 0) {
+      response = {
+        statusCode: 400,
+        body: JSON.stringify({ message: errors }),
+      };
+    } else {
+      const localHelper = helper(params);
+      const url = localHelper.buildUrl(params);
+      console.log('URL', url);
+      const ret = await axios(url);
+      const transformedData = localHelper.transform(ret.data);
+      const retData = removeAttributes(transformedData, params.to_remove);
+      const modData = transformData(retData, localHelper);
+      const filterParams = getFilterParams(params);
+      const web = html(modData, url, filterParams, params.url);
+      response = {
+        statusCode: 200,
+        headers: { 'Content-Type': 'text/html' },
+        body: web,
+      };
+    }
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+
+  return response;
 }
