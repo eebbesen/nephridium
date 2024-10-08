@@ -12,9 +12,10 @@
     "node-json2html": ">=3.2.0"
   },
   "scripts": {
+    "lint": "node_modules/eslint/bin/eslint.js .",
+    "prettier": "prettier --write .",
     "test": "c8 -x '**/tests/**' mocha tests/unit/",
-    "test_report": "c8 -x '**/tests/**' mocha tests/unit/ --reporter mochawesome",
-    "lint": "node_modules/eslint/bin/eslint.js ."
+    "test_report": "c8 -x '**/tests/**' mocha tests/unit/ --reporter mochawesome"
   },
   "engines": {
     "node": ">=20.18.0"
