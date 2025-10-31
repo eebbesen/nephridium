@@ -194,7 +194,7 @@ describe('Tests index', () => {
 
   describe('lambdaHandler', () => {
     // add .skip or comment out if you don't want to execute this live test
-    it('gets data with additional filters Socrata', async () => {
+    it.skip('gets data with additional filters Socrata', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
       const event = {};
       event.queryStringParameters = {
@@ -211,7 +211,7 @@ describe('Tests index', () => {
     }).timeout(15000);
 
     // add .skip or comment out if you don't want to execute this live test
-    it('gets data with additional filters ARC GIS', async () => {
+    it.skip('gets data with additional filters ARC GIS', async () => {
       console.log('******************* I REALLY HIT A LIVE ENDPOINT!!');
       const event = {};
       event.queryStringParameters = {
